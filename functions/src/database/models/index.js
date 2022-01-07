@@ -15,6 +15,28 @@ db.sequelize = sequelize;
 module.exports = db;
 
 
+// const show = sequelize.define('Show', { 
+//   id: {
+//       type: Sequelize.INTEGER,
+//       primaryKey: true,
+//       autoIncrement: true,
+//       allowNull: false,
+//   },
+//   is_deleted: {
+//       type: Sequelize.BOOLEAN,
+//       defaultValue: false,
+//   }
+// } , {
+//   sequelize,
+//   timestamps: false,
+//   underscored: false,
+//   modelName: 'Media',
+//   tableName: 'media',
+//   paranoid: false,
+//   charset: 'utf8mb4',
+//   collate: 'utf8mb4_general_ci',
+// }
+// );
 
 // 'use strict';
 
