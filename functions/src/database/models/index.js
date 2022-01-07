@@ -6,6 +6,7 @@ const Post=require('./post');
 const Media=require('./media');
 const Additional=require('./additional');
 const Img=require('./img');
+const Label=require('./label');
 
 const db ={};
 const sequelize = new Sequelize(
@@ -21,18 +22,21 @@ db.Post=Post;
 db.Media=Media;
 db.Additional=Additional;
 db.Img=Img;
+db.Label=Label;
 
 User.init(sequelize);
 Post.init(sequelize);
 Media.init(sequelize);
 Additional.init(sequelize);
 Img.init(sequelize);
+Label.init(sequelize);
 
 User.associate(db);
 Post.associate(db);
 Media.associate(db);
 Additional.associate(db);
 Img.associate(db);
+Label.associate(db);
 
 module.exports = db;
 
