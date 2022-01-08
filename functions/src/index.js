@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // 라우팅: routes 폴더로 관리
-app.use("/", indexRouter);
+//app.use("/", indexRouter);
 
 //  route 폴더에 우리가 지정할 경로가 아닌 다른 경로로 요청이 올 경우,
 //  잘못된 경로로 요청이 들어왔다는 메시지를 클라이언트에 보냄
