@@ -16,4 +16,15 @@ const addUser = async (client, email, nick, token) => {
     return convertSnakeToCamel.keysToCamel(rows[0]);
   };
 
-module.exports = { addUser };
+const getAllUsers = async (client) => {
+    const { rows } = await client.query(
+      `
+      SELECT * FROM "user" u
+      WHERE is_deleted = FALSE
+      `,
+    );
+    return convertSnakeToCamel.keysToCamel(rows);
+};
+
+
+module.exports = { addUser, getAllUsers };
