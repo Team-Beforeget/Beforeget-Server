@@ -7,22 +7,12 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const hpp = require("hpp");
 const helmet = require("helmet");
-const { sequelize } = require('./database/models');
-//const indexRouter = require("./router/index");
+const indexRouter = require("./router/index");
 
 // initializing
 dotenv.config();
 const app = express();
 const logger = morgan('dev');
-
-/**DB 관련 */
-sequelize.sync({ force: false })
-    .then(() => {
-        console.log('✅ Connect to DB');
-    })
-    .catch((err) => {
-        console.log('❌ DB ERROR:', err);
-    });
 
 //  보안을 위한 미들웨어들
 //  process.env.NODE_ENV는 배포된 서버에서는 'production'으로, 로컬에서 돌아가는 서버에서는 'development'로 고정됨.
@@ -39,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // 라우팅: routes 폴더로 관리
-//app.use("/", indexRouter);
+app.use("/", indexRouter);
 
 //  route 폴더에 우리가 지정할 경로가 아닌 다른 경로로 요청이 올 경우,
 //  잘못된 경로로 요청이 들어왔다는 메시지를 클라이언트에 보냄
