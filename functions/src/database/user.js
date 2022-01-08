@@ -4,7 +4,7 @@ const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 const addUser = async (client, email, nick, token) => {
     const { rows } = await client.query(
       `
-      INSERT INTO "user" u
+      INSERT INTO "user"
       (email, nick, token)
       VALUES
       ($1, $2, $3)

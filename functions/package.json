@@ -16,11 +16,7 @@
   "dependencies": {
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-<<<<<<< HEAD
-    "cross-env": "^7.0.3",
-=======
     "dayjs": "^1.10.7",
->>>>>>> 087896cdc0b27a856a12c931cdd7fc92c2457e30
     "dotenv": "^10.0.0",
     "eslint-config-prettier": "^8.3.0",
     "express": "^4.17.2",

@@ -9,7 +9,7 @@ const joinController = async (req, res) => {
     let client;
     try{
         client = await db.connect();
-        const user = await userDB.addUser(client, email, nick); // password는 db에 저장 안함 
+        const user = await userDB.addUser(client, email, nick,'3fwlfkel'); // password는 db에 저장 안함 
         res
         .status(statusCode.OK)
         .send(
@@ -19,6 +19,7 @@ const joinController = async (req, res) => {
                 user)
         );
     } catch (error) {
+       console.log(error)
         return res
         .status(statusCode.INTERNAL_SERVER_ERROR)
         .send(
