@@ -1,27 +1,32 @@
-const functions = require('firebase-functions');
 const jwt = require('jsonwebtoken');
 const { TOKEN_INVALID, TOKEN_EXPIRED } = require('../constants/jwt');
 const secretKey = process.env.JWT_SECRET;
 const options = {
   algorithm: 'HS256',
-  expiresIn: '30d',
-  issuer: 'wesopt',
+  expiresIn: '14d',
+  issuer: 'chanwoo',
 };
+const refreshOptions = {
+  algorithm: 'HS256',
+  expiresIn: '30d',
+  issuer: 'chanwoo',
+}
 
-const sign = (user) => {
+const issueToken = (user) => {
   const payload = {
     id: user.id,
     email: user.email,
-    name: user.name || null,
+    nick: user.nick || null,
     idFirebase: user.idFirebase,
   };
 
   const result = {
     accesstoken: jwt.sign(payload, secretKey, options),
-    // refreshToken: jwt.sign(payload, secretKey, refreshOptions),
+    refreshtoken: jwt.sign({}, secretKey, refreshOptions),
   };
   return result;
 };
+
 const verify = (token) => {
   let decoded;
   try {
@@ -43,6 +48,6 @@ const verify = (token) => {
 };
 
 module.exports = {
-  sign,
+  issueToken,
   verify,
 };
