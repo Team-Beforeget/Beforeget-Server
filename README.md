@@ -1,7 +1,8 @@
 # Beforeget-Server
 올해 Saint Nicolas🎅🏻의 선물! 비포겟 서버🚀
 > ### [1차 과제]
-> - ERD <br><img width="500" height="500" alt="ERD" src="https://user-images.githubusercontent.com/68634112/148641373-3a9bc39e-29ea-49e7-b07b-1381bb790510.png"><br>
+> - ERD <br>
+> <img width="500" height="550" alt="ERD" src="https://user-images.githubusercontent.com/68634112/148671294-8ec48dbc-373f-464c-b43d-b1e47ade81dc.PNG"><br>
 > - 역할 분담 <br> 
 > <table>
 >    <thead>
@@ -11,7 +12,7 @@
 >        <tr><td>Firebase, Datagrip 세팅</td><td>API 구상, 문서 작성</td></tr>
 >        <tr><td colspan="2">DB 구상, Client와 API 문서 논의</td>
 >        <tr><td>사용자 인증</td><td>유형별 항목 제공</td></tr>
->        <tr><td>전체 글 조회</td><td>특정 글 조회</td></tr>
+>        <tr><td>글 조회</td><td>글 업로드</td></tr>
 >        <tr><td>글 필터링</td><td>글 수정, 삭제</td></tr>
 >        <tr><td>통계 1,2</td><td>통계 3,4</td></tr>
 >    </tbody>
