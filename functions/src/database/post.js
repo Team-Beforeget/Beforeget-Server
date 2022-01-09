@@ -48,7 +48,7 @@ const getPostById = async (client, postId) => {
 
 
 
-const addPost = async (client, userId, title, content) => {
+const addPost = async (client, userId, mediaId, star, title, oneline, comment) => {
 
   const { rows } = await client.query(
 
@@ -56,17 +56,17 @@ const addPost = async (client, userId, title, content) => {
 
     INSERT INTO post
 
-    (user_id, title, content)
+    (user_id, media_id, star, title, oneline, comment)
 
     VALUES
 
-    ($1, $2, $3)
+    ($1, $2, $3, $4, $5, $6)
 
-    RETURNING *
+    RETURNING id
 
     `,
 
-    [userId, title, content],
+    [userId, mediaId, star, title, oneline, comment],
 
   );
 
@@ -155,53 +155,6 @@ const deletePost = async (client, postId) => {
 };
 
 
-
-const getPostsByUserId = async (client, userId) => {
-
-  const { rows } = await client.query(
-
-    `
-
-    SELECT * FROM post
-
-    WHERE user_id = $1
-
-      AND is_deleted = FALSE
-
-    `,
-
-    [userId],
-
-  );
-
-  return convertSnakeToCamel.keysToCamel(rows);
-
-};
-
-
-
-const getPostsByUserIds = async (client, userIds) => {
-
-  if (userIds.length < 1) return [];
-
-  const { rows } = await client.query(
-
-    `
-
-    SELECT * FROM post
-
-    WHERE user_id IN (${userIds.join()})
-
-      AND is_deleted = FALSE
-
-    `,
-
-  );
-
-  return convertSnakeToCamel.keysToCamel(rows);
-
-};
-
 const countPostsByMedia = async (client, userId) => { //유형별 사용자 기록 수
 
   const { rows } = await client.query(
@@ -227,4 +180,4 @@ const countPostsByMedia = async (client, userId) => { //유형별 사용자 기�
 };
 
 
-module.exports = { getAllPosts, getPostById, addPost, updatePost, deletePost, getPostsByUserId, getPostsByUserIds, countPostsByMedia };
+module.exports = { getAllPosts, getPostById, addPost, updatePost, deletePost, countPostsByMedia };

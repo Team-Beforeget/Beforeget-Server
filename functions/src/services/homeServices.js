@@ -7,7 +7,7 @@ const getHomeService = async (req, res) => {
     let data = {"Movie":0,"Book":0,"TV":0,"Music":0,"Webtoon":0,"Youtube":0}
     try {
       client = await db.connect(req);
-      const counts = await postDB.countPostsByMedia(client,1);
+      const counts = await postDB.countPostsByMedia(client,req.user.id);
       for(i of counts){
           data[media[i['mediaId']-1]] = i['count'];
       }
