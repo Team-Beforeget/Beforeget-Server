@@ -37,6 +37,8 @@ const checkUserByToken = async (req, res, next) => {
                 
                 res.cookie('accesstoken', newAccesstoken);
                 req.cookies.accesstoken = newAccesstoken;
+
+                req.user = user;
                 next();
             }
         } else if (decodedRefreshtoken === TOKEN_EXPIRED) { // refreshtoken만 만료
@@ -48,10 +50,12 @@ const checkUserByToken = async (req, res, next) => {
                 return res.status(statusCode.UNAUTHORIZED).send(util.fail(statusCode.UNAUTHORIZED, responseMessage.TOKEN_EXPIRED));
             }
             // user 디비에 새로 발급해준 refreshtoken 저장
-            await userDB.updateUserToken(client, userIdFirebase, newRefreshtoken);
+            const user = await userDB.updateUserToken(client, userIdFirebase, newRefreshtoken);
 
             res.cookie('refreshtoken', newRefreshtoken);
             req.cookies.refreshtoken = newRefreshtoken;
+
+            req.user = user;
             next();
         } else { // accesstoken, refreshtoken 모두 유효
             const userIdFirebase = decodedAccesstoken.idFirebase;
