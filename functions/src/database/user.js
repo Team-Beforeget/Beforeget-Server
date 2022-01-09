@@ -9,7 +9,7 @@ const addUser = async (client, email, nick, idFirebase) => {
       VALUES
       ($1, $2, $3)
       RETURNING *
-      `,
+      `
       [email, nick, idFirebase]
     );
     return convertSnakeToCamel.keysToCamel(rows[0]);
