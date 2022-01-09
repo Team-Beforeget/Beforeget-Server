@@ -202,6 +202,29 @@ const getPostsByUserIds = async (client, userIds) => {
 
 };
 
+const countPostsByMedia = async (client, userId) => { //유형별 사용자 기록 수
+
+  const { rows } = await client.query(
+
+    `
+
+    SELECT media_id, COUNT(id) FROM post
+
+    WHERE user_id = $1
+
+      AND is_deleted = FALSE
+
+      GROUP BY media_id
+
+    `,
+
+    [userId],
+
+  );
+
+  return convertSnakeToCamel.keysToCamel(rows);
+
+};
 
 
-module.exports = { getAllPosts, getPostById, addPost, updatePost, deletePost, getPostsByUserId, getPostsByUserIds };
+module.exports = { getAllPosts, getPostById, addPost, updatePost, deletePost, getPostsByUserId, getPostsByUserIds, countPostsByMedia };
