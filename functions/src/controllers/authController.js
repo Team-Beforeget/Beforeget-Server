@@ -1,7 +1,7 @@
 const util = require("../lib/util");
 const statusCode = require("../constants/statusCode");
 const responseMessage = require("../constants/responseMessage");
-const { joinService, loginService } = require("../service/authService");
+const { joinService, loginService, logoutService } = require("../service/authService");
 
 /**
  *  @회원가입
@@ -151,4 +151,46 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { joinController, loginController };
+/**
+ *  @로그아웃
+ *  @route GET /auth/login
+ *  @access public
+ */
+
+const logoutController = async (req, res) => {
+  try {
+    const data = await logoutService(req);
+    // DB 에러
+    if (data === -1) {
+      return res
+        .status(statusCode.DB_ERROR)
+        .send(util.fail(
+          statusCode.DB_ERROR, 
+          responseMessage.DB_ERROR
+        ));
+    }
+    // 로그아웃 실패
+    else if (data === -2) {
+      return res.status(statusCode.BAD_REQUEST).send(statusCode.BAD_REQUEST, responseMessage.LOGOUT_FAIL);
+    } 
+    // 로그아웃 성공
+    else {
+      res
+        .status(statusCode.OK)
+        .send(util.success(
+          statusCode.OK, 
+          responseMessage.LOGOUT_SUCCESS, 
+          data
+        ));
+    }
+  } catch (error) {
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(util.fail(
+        statusCode.INTERNAL_SERVER_ERROR, 
+        responseMessage.INTERNAL_SERVER_ERROR
+      ));
+  }
+};
+
+module.exports = { joinController, loginController, logoutController };

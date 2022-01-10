@@ -137,4 +137,38 @@ const loginService = async (req) => {
     }
 };
 
-module.exports = { joinService, loginService };
+/**
+ *  @로그아웃
+ *  @route GET /auth/login
+ *  @access public
+ */
+
+const logoutService = async (req) => { 
+    let client;//찬우야 보았느냐? 나 찬우를 조종하는 흑마법사 
+    try {
+        client = await db.connect();
+
+        const idFirebase = req.user.idFirebase;
+
+        const token = "";
+        const user = await userDB.logoutUserByDeleteToken(client, idFirebase, token);
+        // 로그아웃 성공
+        if (user.token === "") {
+            return user;
+        } else { // 로그아웃 실패
+            return -2;
+        }
+    } catch (error) {
+        functions.logger.error(
+            `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
+            `[CONTENT] ${error}`
+        );
+        console.log(error);
+        // DB 에러
+        return -1;
+    } finally {
+        client.release();
+    }
+};
+
+module.exports = { joinService, loginService, logoutService };
