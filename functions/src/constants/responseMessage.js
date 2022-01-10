@@ -3,7 +3,9 @@ module.exports = {
   OUT_OF_VALUE: "파라미터 값이 잘못되었습니다",
   DB_ERROR: "디비 에러",
   FIREBASE_ERROR: "firebase 오류",
-
+  
+  REQUEST_SUCCESS: "요청 성공",
+  
   // 회원가입
   CREATED_USER: "회원 가입 성공",
   DELETE_USER: "회원 탈퇴 성공",
@@ -37,6 +39,8 @@ module.exports = {
   SEARCH_POST_SUCCESS: "포스트 검색 성공",
   NO_SEARCH_POST: "포스트 검색 결과 없음",
   NO_POST: "존재하지 않는 포스트입니다.",
+  POST_REQUIRED_UNFULFILLED: "필수 항목을 입력해주세요.",
+  POST_ADDITIONAL_UNFULFILLED: "추가 항목 기입을 마쳐주세요.",
 
   // 서버 내 오류
   INTERNAL_SERVER_ERROR: "서버 내 오류",
