@@ -43,16 +43,19 @@ const getPostById = async (client, postId) => {
 
 
 
-const addPost = async (client, userId, mediaId, star, title, oneline, comment) => {
+const addPost = async (client, userId, mediaId, date, star, title, oneline, comment) => {
   const { rows } = await client.query(
     `
     INSERT INTO post
     (user_id, media_id, star, title, oneline, comment)
     VALUES
     ($1, $2, $3, $4, $5, $6)
+    (user_id, media_id, created_at, star, title, oneline, comment)
+    VALUES
+    ($1, $2, $3, $4, $5, $6, $7)
     RETURNING id
     `,
-    [userId, mediaId, star, title, oneline, comment],
+    [userId, mediaId, date, star, title, oneline, comment],
   );
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };

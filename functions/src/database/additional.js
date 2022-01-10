@@ -3,17 +3,23 @@ const _ = require('lodash');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
 
-const postAdditional = async (client, mediaId) => {
+const postAdditional = async (client, postId, title, content) => {
 
     const { rows } = await client.query(
 
     `
 
-    SELECT oneline FROM media
-    WHERE id = $1
+    INSERT INTO additional
+    (post_id, title, content)
+
+    VALUES
+
+    ($1, $2, $3)
+
+    RETURNING id
     `,
 
-    [mediaId],
+    [postId, title, content],
 
     );
 
