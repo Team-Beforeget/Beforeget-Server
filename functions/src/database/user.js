@@ -5,11 +5,11 @@ const addUser = async (client, email, nick, idFirebase) => {
     const { rows } = await client.query(
       `
       INSERT INTO "user"
-      (email, nick, id_firebase)
+      (email, nick, id_firebase 
       VALUES
       ($1, $2, $3)
       RETURNING *
-      `
+      `,
       [email, nick, idFirebase]
     );
     return convertSnakeToCamel.keysToCamel(rows[0]);
