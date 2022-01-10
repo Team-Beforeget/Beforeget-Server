@@ -9,20 +9,20 @@ const { postDB, additionalDB } = require('../database');
  */
 
 const getAllPostService = async (req) => {
-    const { date } = req.body;
     console.log(req.user);
+
     let client;
     try {
         client = await db.connect();
 
         const userId = req.user.id;
+        
         const allPost = await postDB.getAllPostByUserId(client, userId);
-        // 등록된 포스트 없음
-        if (allPost === null) {
+        //FIXME: 등록된 포스트 없음 에러처리
+        if (allPost.length === 0) {
             return -2;
         }
 
-        allPost.posts = allPost;
         return allPost;
     } catch (error) {
         functions.logger.error(
@@ -39,7 +39,7 @@ const getAllPostService = async (req) => {
 
 const postUploadService = async (req, res) => {
     const { media, date, star, title, oneline, comment, additional } = req.body;
-
+    //TODO: const DATE = dayjs(date).format('YYYY-MM-DD'); 하면 어케 되는진 모르겠는데 하면 클라에 이쁘게 보낼 수 있을거같은 느낌??
     if(!media||!date||!star||!title||!oneline){
         return -2;
     }

@@ -1,7 +1,5 @@
 const _ = require('lodash');
-
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
-
 
 
 const getAllPosts = async (client) => {
@@ -9,7 +7,7 @@ const getAllPosts = async (client) => {
     `
     SELECT * FROM post p
     WHERE is_deleted = FALSE
-    `,
+    `
   );
   return convertSnakeToCamel.keysToCamel(rows);
 };
@@ -18,7 +16,8 @@ const getAllPosts = async (client) => {
 const getAllPostByUserId = async (client, userId) => {
   const { rows } = await client.query(
     `
-    SELECT * FROM post p
+    SELECT id, user_id, media_id as category, created_at as date, star, title, oneline, is_deleted
+    FROM post p
     WHERE user_id = $1
       AND is_deleted = FALSE
     `,
