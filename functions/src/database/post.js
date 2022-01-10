@@ -15,6 +15,19 @@ const getAllPosts = async (client) => {
 };
 
 
+const getAllPostByUserId = async (client, userId) => {
+  const { rows } = await client.query(
+    `
+    SELECT * FROM post p
+    WHERE user_id = $1
+      AND is_deleted = FALSE
+    `,
+    [userId]
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
+
 
 const getPostById = async (client, postId) => {
   const { rows } = await client.query(
@@ -102,6 +115,7 @@ const countPostsByMedia = async (client, userId) => { //유형별 사용자 기�
 
 module.exports = { 
   getAllPosts, 
+  getAllPostByUserId,
   getPostById, 
   addPost, 
   updatePost, 

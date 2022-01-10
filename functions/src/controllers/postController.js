@@ -6,6 +6,32 @@ const { getAllPostService } = require("../service/postService");
 const getAllPostController = async (req, res) => {
     try {
         const data = await getAllPostService(req);
+        // DB 에러
+        if (data === -1) {
+            return res
+                .status(statusCode.DB_ERROR)
+                .send(util.fail(
+                    statusCode.DB_ERROR, 
+                    responseMessage.DB_ERROR
+                ));
+        }
+        // 등록된 포스트 없음
+        else if (data === -2) {
+            return res
+                .status(statusCode.DB_ERROR)
+                .send(util.fail(
+                    statusCode.DB_ERROR, 
+                    responseMessage.DB_ERROR
+                ));
+        }
+        // 포스트 전체 조회 성공
+        res
+            .status(statusCode.OK)
+            .send(util.success(
+                statusCode.OK, 
+                responseMessage.READ_ALL_POSTS_SUCCESS, 
+                data
+            ));
     } catch (error) {
         return res
         .status(statusCode.INTERNAL_SERVER_ERROR)

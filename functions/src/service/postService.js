@@ -8,15 +8,21 @@ const { postDB } = require('../database');
  */
 
 const getAllPostService = async (req) => {
+    const { date } = req.body;
+    console.log(req.user);
     let client;
     try {
         client = await db.connect();
-        
-        const allPost = await postDB.getAllPosts(client);
+
+        const userId = req.user.id;
+        const allPost = await postDB.getAllPostByUserId(client, userId);
         // 등록된 포스트 없음
-        if (!allPost) {
+        if (allPost === null) {
             return -2;
         }
+
+        allPost.posts = allPost;
+        return allPost;
     } catch (error) {
         functions.logger.error(
             `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
