@@ -1,7 +1,7 @@
 const util = require("../lib/util");
 const statusCode = require("../constants/statusCode");
 const responseMessage = require("../constants/responseMessage");
-const { getOnelinesService, getRecommendsService } = require('../services/categoryServices');
+const { getOnelinesService, getRecommendsService } = require('../service/categoryService');
 
 const onelineController = async (req, res) => {
 
