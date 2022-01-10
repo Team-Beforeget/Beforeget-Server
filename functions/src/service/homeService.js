@@ -8,7 +8,7 @@ const getHomeService = async (req, res) => {
     try {
       client = await db.connect(req);
       const counts = await postDB.countPostsByMedia(client,req.user.id);
-      for(i of counts){
+      for(let i of counts){
           data[media[i['mediaId']-1]] = i['count'];
       }
       return data;
