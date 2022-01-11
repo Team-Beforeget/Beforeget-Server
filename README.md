@@ -22,4 +22,6 @@
 > - COMMIT, CODING CONVENTION, BRANCH <br> <img width="600" height="550" alt="ERD" src="https://user-images.githubusercontent.com/68634112/148641446-b27e3318-9d34-407f-ad0a-f289e063252b.PNG"><br>
 > - 폴더 구조  <br><img width="600" height="550" alt="ERD" src="https://user-images.githubusercontent.com/68634112/148641464-0fe7ed12-fda0-4e3f-9741-341aa1c3517c.PNG"><br>
 > - 전체 API로직 구현 진척도
+> ![image](https://user-images.githubusercontent.com/68634112/148975096-3438ff68-4aea-460b-a94d-1c6687643875.png)
+
 > - API 명세서 링크 <br>👉 https://www.notion.so/API-docs-75fd8df3dd6b4f05a1baffba9b209866
