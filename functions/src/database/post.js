@@ -26,6 +26,23 @@ const getAllPostByUserId = async (client, userId) => {
 };
 
 
+// FIXME
+const filterUserPost = async (client, userId, date, media, star) => {
+  const { rows } = await client.query(
+    `
+    SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+    FROM post p
+    WHERE user_id = $1
+      AND date IN ${date}
+        OR category IN ${media}
+        OR star IN ${star}
+    `,
+    [userId]
+  );
+  return convertSnakeToCamel.keysToCamel(rows)
+};
+
+
 
 const getPostById = async (client, postId) => {
   const { rows } = await client.query(
@@ -87,6 +104,44 @@ const updatePost = async (client, title, content, postId) => {
 
 
 
+// const updateOneline = async (client, userId, post) => {
+//   const { rows: existingRows } = await client.query(
+//     `
+//     SELECT * FROM post p
+//     WHERE user_id = $1
+//     `,
+//     [userId]
+//   );
+  
+//   const data = _.mergeWith({}, existingRows[0], () => {
+//     //TODO: 한줄평 배열에서 뽑기
+//     let oneline = post.map(o => o.oneline);
+//     console.log(oneline);
+//     let result1, result2;
+//     for (let i = 0; i < oneline.length; i++) {
+//       result1 = oneline[i][0];
+//       for (i; i < oneline.length; i++) {
+//         post[i].oneline = result1;
+//         result2 = post[i].oneline;
+//         return result2;
+//       }
+//     }
+//   });
+
+//   const { rows } = await client.query(
+//     `
+//     UPDATE post p
+//     SET oneline = $1
+//     WHERE user_id = $2
+//     RETURNING id, media_id as category, created_at as date, star, title, oneline
+//     `,
+//     [data.result2, userId]
+//   );
+//   return convertSnakeToCamel.keysToCamel(rows[0]);
+// };
+
+
+
 const deletePost = async (client, postId) => {
   const { rows } = await client.query(
     `
@@ -118,7 +173,9 @@ module.exports = {
   getAllPosts, 
   getAllPostByUserId,
   getPostById, 
+  filterUserPost,
   addPost, 
   updatePost, 
+  // updateOneline,
   deletePost, 
   countPostsByMedia };

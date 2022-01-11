@@ -17,20 +17,20 @@ const getAllPostService = async (req) => {
 
         const userId = req.user.id;
         
-        const allPost = await postDB.getAllPostByUserId(client, userId);
+        let allPost = await postDB.getAllPostByUserId(client, userId);
         //FIXME: 등록된 포스트 없음 에러처리
         if (allPost.length === 0) {
             return -2;
         }
-        //TODO: 한줄평 배열에서 뽑기
-        // const oneline = allPost.map(o => o.oneline);
+        // //TODO: 한줄평 배열에서 뽑기
+        // let oneline = allPost.map(o => o.oneline);
         // console.log(oneline);
-
-        // let review = new Object();
+        // const posts = await postDB.updateOneline(client, userId, allPost)
+        // let result;
         // for (let i =0; i < oneline.length; i++) {
-        //   review = oneline[i][0];
+        //   result = oneline[i][0];
+        //   const posts = await postDB.updateOneline(client, userId, result, allPost, i);
         // }
-        // console.log(review);
         
         return allPost;
     } catch (error) {
@@ -84,5 +84,37 @@ const postUploadService = async (req, res) => {
     }
   };
 
-module.exports = { getAllPostService, postUploadService };
+/**
+ *  @포스트 나의기록 필터링
+ *  @route GET /post/filter?
+ *  @access public
+ */
+
+const getFilterService = async (req) => {
+  const { date, media, star } = req.query;
+
+  let client;
+  try {
+    client = await db.connect();
+
+    const userId = req.user.id;
+
+    const allPost = await postDB.getAllPostByUserId(client, userId);
+    const posts = await postDB.filterUserPost(client, userId, date, media, star);
+    // default 필터링 안했을 때 포스트 전체 조회
+    if (!posts) {
+      return allPost;
+    }
+
+    return posts;
+  } catch (error) {
+    console.log(error);
+    // DB 에러
+    return -1;
+  } finally {
+    client.release();
+  }
+};
+
+module.exports = { getAllPostService, postUploadService, getFilterService };
 
