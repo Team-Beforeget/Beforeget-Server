@@ -3,6 +3,9 @@ const { postDB, additionalDB } = require('../database');
 
 const postUploadService = async (req, res) => {
     const { media, date, star, title, oneline, comment, additional } = req.body;
+    
+    const { imageUrls } = req;
+    console.log(imageUrls);
 
     if(!media||!date||!star||!title||!oneline){
         return -2;

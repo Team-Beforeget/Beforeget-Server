@@ -8,7 +8,6 @@ const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
       const { rows } = await client.query(
 
         `
-
         SELECT oneline FROM media
         WHERE id = $1
         `,
