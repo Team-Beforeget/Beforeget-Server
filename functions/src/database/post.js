@@ -136,7 +136,7 @@ const deletePost = async (client, postId) => {
 
     UPDATE post p
 
-    SET is_deleted = TRUE, updated_at = now()
+    SET is_deleted = TRUE
 
     WHERE id = $1
 
@@ -147,7 +147,40 @@ const deletePost = async (client, postId) => {
     [postId],
 
   );
+  await client.query(
 
+    `
+
+    UPDATE additional a
+
+    SET is_deleted = TRUE
+
+    WHERE post_id = $1
+
+    RETURNING *
+
+    `,
+
+    [postId],
+
+  );
+  await client.query(
+
+    `
+
+    UPDATE img i
+
+    SET is_deleted = TRUE
+
+    WHERE post_id = $1
+
+    RETURNING *
+
+    `,
+
+    [postId],
+
+  );
 
 
   return convertSnakeToCamel.keysToCamel(rows[0]);

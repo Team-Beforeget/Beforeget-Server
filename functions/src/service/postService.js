@@ -51,7 +51,28 @@ const postUploadService = async (req, res) => {
     }
   };
 
+const postDeleteService = async(req,res)=>{
+  const { postId } = req.params;
+  if(!postId){ return -2;}
+
+  let client;
+
+  try {
+    client = await db.connect(req);
+    const id = await postDB.deletePost(client, postId);
+
+    return id;
+
+  } catch (error) {
+      console.log(error)
+      return -5;
+
+  } finally {
+    client.release();
+  }
+}
 
 module.exports = {
-    postUploadService
+    postUploadService,
+    postDeleteService
 }
