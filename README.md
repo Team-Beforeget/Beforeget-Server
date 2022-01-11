@@ -2,7 +2,8 @@
 올해 Saint Nicolas🎅🏻의 선물! 비포겟 서버🚀
 > ### [1차 과제]
 > - ERD <br>
-> <img width="500" height="550" alt="ERD" src="https://user-images.githubusercontent.com/68634112/148671294-8ec48dbc-373f-464c-b43d-b1e47ade81dc.PNG"><br>
+>
+> <img width="500" height="550" alt="ERD" src="https://user-images.githubusercontent.com/68634112/148972847-92a3437c-8b20-42d6-a1e1-062bf99abdc3.png"><br>
 > - 역할 분담 <br> 
 > <table>
 >    <thead>
