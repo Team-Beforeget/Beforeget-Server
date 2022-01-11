@@ -22,7 +22,16 @@ const getAllPostService = async (req) => {
         if (allPost.length === 0) {
             return -2;
         }
+        //TODO: 한줄평 배열에서 뽑기
+        // const oneline = allPost.map(o => o.oneline);
+        // console.log(oneline);
 
+        // let review = new Object();
+        // for (let i =0; i < oneline.length; i++) {
+        //   review = oneline[i][0];
+        // }
+        // console.log(review);
+        
         return allPost;
     } catch (error) {
         functions.logger.error(

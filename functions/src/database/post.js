@@ -16,10 +16,9 @@ const getAllPosts = async (client) => {
 const getAllPostByUserId = async (client, userId) => {
   const { rows } = await client.query(
     `
-    SELECT id, user_id, media_id as category, created_at as date, star, title, oneline, is_deleted
+    SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
     FROM post p
     WHERE user_id = $1
-      AND is_deleted = FALSE
     `,
     [userId]
   );
