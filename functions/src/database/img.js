@@ -3,14 +3,14 @@ const _ = require('lodash');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
 
-const postAdditional = async (client, postId, title, content) => {
+const postImg = async (client, postId, title, url) => {
 
     const { rows } = await client.query(
 
     `
 
-    INSERT INTO additional
-    (post_id, title, content)
+    INSERT INTO img
+    (post_id, title, url)
 
     VALUES
 
@@ -19,7 +19,7 @@ const postAdditional = async (client, postId, title, content) => {
     RETURNING id
     `,
 
-    [postId, title, content],
+    [postId, title, url],
 
     );
 
@@ -29,4 +29,4 @@ const postAdditional = async (client, postId, title, content) => {
 
 
 
-module.exports = { postAdditional };
+module.exports = { postImg };
