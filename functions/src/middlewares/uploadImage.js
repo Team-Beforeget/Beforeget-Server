@@ -43,7 +43,7 @@ const uploadImage = (req, res, next) => {
   // req.body로 들어온 파일들을 Firebase Storage에 업로드
   busboy.on('finish', async () => {
     let promises = [];
-    let i=1;
+    
     imagesToUpload.forEach((imageToBeUploaded) => {
       imageUrls.push(`https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${imageToBeUploaded.imageFileName}?alt=media`);
       
