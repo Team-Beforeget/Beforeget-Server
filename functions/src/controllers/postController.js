@@ -6,7 +6,7 @@ const { getAllPostService, postUploadService, getFilterService } = require("../s
 /**
  *  @포스트 전체 조회
  *  @route GET /post
- *  @access public
+ *  @access private
  */
 
 const getAllPostController = async (req, res) => {
@@ -51,7 +51,7 @@ const getAllPostController = async (req, res) => {
 /**
  *  @포스트 포스트 업로드 (글쓰기)
  *  @route POST /post/upload
- *  @access public
+ *  @access private
  */
 
 const postUploadController= async (req, res) => {
@@ -72,7 +72,7 @@ const postUploadController= async (req, res) => {
 /**
  *  @포스트 나의기록 필터링
  *  @route GET /post/filter?
- *  @access public
+ *  @access private
  */
 
 const postFilterController = async (req, res) => {
