@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const db = require('../database/db');
 const dayjs = require('dayjs');
+const _ = require('lodash');
 const { postDB, additionalDB } = require('../database');
 
 /**
@@ -105,30 +106,60 @@ const getFilterService = async (req) => {
       newDate = today.subtract(3, 'month').format('YYYY-MM-DD');
     } else if (parseInt(date) === 14) { // 14일 차감
       newDate = today.subtract(14, 'day').format('YYYY-MM-DD');
+    } else if (date.length === 0) { // date에 공백 들어오면 그냥 기본날짜 보내주면 되나? => 질문필요
+      newDate = today.format('YYYY-MM-DD');
     } else { // date = '2022-01-05,2022-04-02'형태일 때
-      newDate = date.split(',');
-      start = newDate[0];
-      end = newDate[1];
-    }
-    // media(category)중복선택 처리 => 근데 다 누를 수 있는거임?? ㅇㅇ 다 선택 가능
+        newDate = date.split(',');
+        start = newDate[0];
+        end = newDate[1];
+      }
+
+
+
+    // media(category)중복선택 처리 
     let newMedia;
+    let mediaIds = new Array();
     if (media.split(',').length > 1) { // 넘어온 놈이 2개 이상
       newMedia = media.split(',');
-      for (let i = 0; i < newMedia.length; i++) {
-        
+      for (let i in newMedia) {
+        mediaIds[i] = parseInt(newMedia[i]);
       }
+    } else if (media.split(',').length === 1) { // 하나만 선택
+      mediaIds = parseInt(media);
     }
+    // 하나 받을때
+    console.log(mediaIds); // 1
+    console.log(mediaIds.toString().length); // 1
+    console.log(mediaIds.length); // undefined
+
+
+
     // star 중복선택 처리
+    let newStar;
+    let starIds = new Array();
+    if (star.split(',').length > 1) { // 넘어온 놈이 2개 이상
+      newStar = star.split(',');
+      for (let i in newStar) {
+        starIds[i] = parseInt(newStar[i]);
+      }
+    } else if (star.split(',').length === 1) { // 하나만 선택
+      starIds = parseInt(star);
+    }
+    // 공백 받을때
+    console.log(starIds); // NaN
+    console.log(starIds.toString().length); // 3
+    console.log(starIds.length); // undefined
+    
+
 
     const userId = req.user.id;
-    // date는..newDate, start, end넘기고 // media는,,,
-    const posts = await postDB.filterUserPost(client, userId, date, media, star); 
+    // date 필터링이 문제다~~~~~~~~~~~~~
+    const posts = await postDB.filterUserPost(client, userId, newDate, start, end, mediaIds, starIds); 
     // default 필터링 안했을 때 포스트 전체 조회
-    const allPost = await postDB.getAllPostByUserId(client, userId);
-    if (!posts) {
-      return allPost;
-    }
+    // eslint-disable-next-line use-isnan
 
+    const allPost = await postDB.getAllPostByUserId(client, userId);
+    
     return posts;
   } catch (error) {
     console.log(error);
@@ -139,5 +170,41 @@ const getFilterService = async (req) => {
   }
 };
 
-module.exports = { getAllPostService, postUploadService, getFilterService };
+/**
+ *  @포스트 나의기록 상세보기
+ *  @route GET /post/:postId
+ *  @access private
+ */
+
+const getOnePostService = async (req) => {
+  const { postId } = req.params;
+
+  let client;
+  try {
+    client = await db.connect();
+    
+    const userId = req.user.id;
+     
+    const img = postDB.getImgByPostId(client, postId);
+    const add = additionalDB.getAdditionalByPostId(client, postId);
+    //const addObj = Object
+    return add;
+
+    //const myPost = await postDB.getOnePostById(client, postId, userId);
+  } catch (error) {
+    console.log(error);
+    // DB 에러
+    return -1;
+  } finally {
+    client.release();
+  }
+};
+
+
+module.exports = { 
+  getAllPostService, 
+  postUploadService, 
+  getFilterService,
+  getOnePostService 
+};
 

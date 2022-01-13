@@ -27,6 +27,17 @@ const postAdditional = async (client, postId, title, content) => {
 
 };
 
+const getAdditionalByPostId = async (client, postId) => {
+    const { rows } = await client.query(
+        `
+        SELECT title, content FROM additional
+        WHERE post_id = $1
+        `,
+        [postId]
+    );
+    return convertSnakeToCamel.keysToCamel(rows);
+};
 
 
-module.exports = { postAdditional };
+
+module.exports = { postAdditional, getAdditionalByPostId };

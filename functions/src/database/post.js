@@ -26,35 +26,214 @@ const getAllPostByUserId = async (client, userId) => {
 };
 
 
-// FIXME
-const filterUserPost = async (client, userId, date, media, star) => {
-  const { rows } = await client.query(
-    `
-    SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
-    FROM post p
-    WHERE user_id = $1
-      AND date IN ${date}
-        OR category IN ${media}
-        OR star IN ${star}
-    `,
-    [userId]
-  );
-  return convertSnakeToCamel.keysToCamel(rows)
+// TODO: 무엇을 해야하냐면...date필터링 조져야하는데...timestamp가 integer라나 뭐라나..
+const filterUserPost = async (client, userId, date, start, end, mediaIds, starIds) => {
+  // media가 공백
+  if (mediaIds.toString().length === 3 && mediaIds.length === undefined) {
+    // star도 공백
+    if (starIds.toString().length === 3 && starIds.length === undefined) {
+      const { rows } = await client.query(
+        `
+        SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+        FROM post p
+        WHERE user_id = ${userId}
+        `
+        );
+        return convertSnakeToCamel.keysToCamel(rows);
+    } 
+    // star가 하나
+    else if (starIds.toString().length === 1) {
+      const { rows } = await client.query(
+        `
+        SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+        FROM post p
+        WHERE user_id = ${userId}
+        AND star IN (${starIds})
+        `
+        );
+        return convertSnakeToCamel.keysToCamel(rows);
+    }
+    // star가 배열
+    else if (starIds.length > 1) {
+      const { rows } = await client.query(
+        `
+        SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+        FROM post p
+        WHERE user_id = ${userId}
+        AND star IN (${starIds.join()})
+        `
+        );
+        return convertSnakeToCamel.keysToCamel(rows);
+    }
+  }
+  // media가 하나
+  if (mediaIds.toString().length === 1) {
+    // star가 공백
+    if (starIds.toString().length === 3 && starIds.length === undefined) {
+      const { rows } = await client.query(
+        `
+        SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+        FROM post p
+        WHERE user_id = ${userId}
+        AND media_id IN (${mediaIds})
+        `
+        );
+        return convertSnakeToCamel.keysToCamel(rows);
+    } 
+    // star가 하나
+    else if (starIds.toString().length === 1) {
+      const { rows } = await client.query(
+        `
+        SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+        FROM post p
+        WHERE user_id = ${userId}
+        AND media_id IN (${mediaIds})
+        AND star IN (${starIds})
+        `
+        );
+        return convertSnakeToCamel.keysToCamel(rows);
+    }
+    // star가 배열
+    else if (starIds.length > 1) {
+      const { rows } = await client.query(
+        `
+        SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+        FROM post p
+        WHERE user_id = ${userId}
+        AND media_id IN (${mediaIds})
+        AND star IN (${starIds.join()})
+        `
+        );
+        return convertSnakeToCamel.keysToCamel(rows);
+    }
+  }
+  // media가 배열
+  if (mediaIds.length > 1) {
+    // star가 공백
+    if (starIds.toString().length === 3 && starIds.length === undefined) {
+      const { rows } = await client.query(
+        `
+        SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+        FROM post p
+        WHERE user_id = ${userId}
+        AND media_id IN (${mediaIds.join()})
+        `
+        );
+        return convertSnakeToCamel.keysToCamel(rows);
+    } 
+    // star가 하나
+    else if (starIds.toString().length === 1) {
+      const { rows } = await client.query(
+        `
+        SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+        FROM post p
+        WHERE user_id = ${userId}
+        AND media_id IN (${mediaIds.join()})
+        AND star IN (${starIds})
+        `
+        );
+        return convertSnakeToCamel.keysToCamel(rows);
+    }
+    // star가 배열
+    else if (starIds.length > 1) {
+      const { rows } = await client.query(
+        `
+        SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+        FROM post p
+        WHERE user_id = ${userId}
+        AND media_id IN (${mediaIds.join()})
+        AND star IN (${starIds.join()})
+        `
+        );
+        return convertSnakeToCamel.keysToCamel(rows);
+    }
+  }
+
 };
 
 
+// if (mediaIds.length > 1) {
+//   if (starIds.length === undefined) {
+//     const { rows } = await client.query(
+//       `
+//       SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+//       FROM post p
+//       WHERE user_id = ${userId}
+//       AND media_id IN (${mediaIds.join()})
+//       AND star IN (${starIds})
+//       `
+//       );
+//       return convertSnakeToCamel.keysToCamel(rows);
+//     } else if (starIds.length > 1) {
+//       const { rows } = await client.query(
+//         `
+//         SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+//         FROM post p
+//         WHERE user_id = ${userId}
+//         AND media_id IN (${mediaIds.join()})
+//         AND star IN (${starIds.join()})
+//         `
+//         );
+//         return convertSnakeToCamel.keysToCamel(rows);
+//       }
+//     } 
+//     else if (mediaIds.length === undefined) {
+//       if (starIds.length === undefined) {
+//         const { rows } = await client.query(
+//           `
+//           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+//           FROM post p
+//           WHERE user_id = ${userId}
+//           AND media_id IN (${mediaIds})
+//           AND star IN (${starIds})
+//           `
+//           );
+//           return convertSnakeToCamel.keysToCamel(rows);
+//         } else if (starIds.length > 1) {
+//           const { rows } = await client.query(
+//             `
+//             SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
+//             FROM post p
+//             WHERE user_id = ${userId}
+//             AND media_id IN (${mediaIds})
+//             AND star IN (${starIds.join()})
+//             `
+//             );
+//             return convertSnakeToCamel.keysToCamel(rows);
+//           }
+//         } 
+// AND created_at IN (${start}, ${end})
 
-const getPostById = async (client, postId) => {
-  const { rows } = await client.query(
-    `
-    SELECT * FROM post p
-    WHERE id = $1
-      AND is_deleted = FALSE
-    `,
-    [postId],
+        
+        
+        
+        const getOnePostById = async (client, postId, userId) => {
+          const { rows } = await client.query(
+            `
+            SELECT id, user_id, title, media category, created_at date, star, onelie, comment
+            FROM post p
+            WHERE id = $1
+            AND user_id = $2
+            INNER JOIN (additional.title, )
+            `,
+            [postId, userId]
   );
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
+
+
+
+const getImgByPostId = async (client, postId) => {
+  const { rows } = await client.query(
+    `
+    SELECT title imgTitle, url imgUrl FROM img
+    WHERE post_id = $1
+    `,
+    [postId]
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
 
 
 
@@ -134,9 +313,11 @@ const countPostsByMedia = async (client, userId) => { //유형별 사용자 기�
 module.exports = { 
   getAllPosts, 
   getAllPostByUserId,
-  getPostById, 
+  getOnePostById, 
   filterUserPost,
   addPost, 
   updatePost, 
   deletePost, 
-  countPostsByMedia };
+  countPostsByMedia,
+  getImgByPostId
+};

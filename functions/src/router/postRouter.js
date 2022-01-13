@@ -1,11 +1,15 @@
 const express = require('express');
-const { getAllPostController, postUploadController, postFilterController } = require('../controllers/postController');
+const { 
+    getAllPostController, 
+    postUploadController, 
+    postFilterController, 
+    getOnePostController} = require('../controllers/postController');
 const router = express.Router();
 
 router.get('/', getAllPostController);
-router.get('/:postId',);
 router.get('/filter',postFilterController);
 router.post('/upload',postUploadController);
+router.get('/:postId', getOnePostController);
 
 module.exports = router;
 

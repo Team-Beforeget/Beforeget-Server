@@ -1,7 +1,11 @@
 const util = require("../lib/util");
 const statusCode = require("../constants/statusCode");
 const responseMessage = require("../constants/responseMessage");
-const { getAllPostService, postUploadService, getFilterService } = require("../service/postService");
+const { 
+  getAllPostService, 
+  postUploadService, 
+  getFilterService, 
+  getOnePostService } = require("../service/postService");
 
 /**
  *  @포스트 전체 조회
@@ -79,6 +83,30 @@ const postFilterController = async (req, res) => {
   try {
     const data = await getFilterService(req);
 
+    res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.REQUEST_SUCCESS, data));
+
+  } catch (error) {
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(util.fail(
+        statusCode.INTERNAL_SERVER_ERROR, 
+        responseMessage.INTERNAL_SERVER_ERROR
+      ));
+  }
+};
+
+/**
+ *  @포스트 나의기록 상세보기
+ *  @route GET /post/:postId
+ *  @access private
+ */
+
+const getOnePostController = async (req, res) => {
+  try {
+    const myData = await getOnePostService(req);
+
+    res.status(statusCode.OK).send(util.success(statusCode.ok, responseMessage.SEARCH_POST_SUCCESS, myData));
+    
   } catch (error) {
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
@@ -90,4 +118,9 @@ const postFilterController = async (req, res) => {
 };
 
 
-module.exports = { getAllPostController, postUploadController, postFilterController };
+module.exports = { 
+  getAllPostController, 
+  postUploadController, 
+  postFilterController,
+  getOnePostController
+};
