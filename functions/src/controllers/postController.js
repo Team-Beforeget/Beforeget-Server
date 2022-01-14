@@ -31,10 +31,10 @@ const getAllPostController = async (req, res) => {
     // 등록된 포스트 없음
     else if (data === -2) {
       return res
-        .status(statusCode.DB_ERROR)
+        .status(statusCode.BAD_REQUEST)
         .send(util.fail(
-          statusCode.DB_ERROR, 
-          responseMessage.DB_ERROR
+          statusCode.BAD_REQUEST, 
+          responseMessage.NO_POST
         ));
     }
     // 포스트 전체 조회 성공
@@ -138,7 +138,7 @@ const postFilterController = async (req, res) => {
       .status(statusCode.OK)
       .send(util.success(
         statusCode.OK, 
-        responseMessage.REQUEST_SUCCESS, 
+        responseMessage.READ_ONE_POST_SUCCESS, 
         data
       ));
 
@@ -161,8 +161,43 @@ const postFilterController = async (req, res) => {
 const getOnePostController = async (req, res) => {
   try {
     const myData = await getOnePostService(req);
-
-    res.status(statusCode.OK).send(util.success(statusCode.ok, responseMessage.SEARCH_POST_SUCCESS, myData));
+    // DB 에러
+    if (myData === -1) {
+      return res
+        .status(statusCode.DB_ERROR)
+        .send(util.fail(
+          statusCode.DB_ERROR, 
+          responseMessage.DB_ERROR
+        ));
+    }
+    // 요청 파라미터 없음
+    else if (myData === -2) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(
+          statusCode.BAD_REQUEST, 
+          responseMessage.NULL_VALUE
+        ));
+    }
+    // 포스트 없음
+    else if (myData === -3) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(
+          statusCode.BAD_REQUEST, 
+          responseMessage.NO_POST
+        ));
+    }
+    // 나의 기록 상세보기 성공
+    else {
+      res
+        .status(statusCode.OK)
+        .send(util.success(
+          statusCode.OK, 
+          responseMessage.READ_ONE_POST_SUCCESS, 
+          myData
+        ));
+    } 
     
   } catch (error) {
     return res
