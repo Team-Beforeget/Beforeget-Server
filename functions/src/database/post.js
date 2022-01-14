@@ -798,7 +798,23 @@ const getPostById = async (client, postId) => {
 
 
 
-module.exports = { 
+
+
+
+const findPostsByDateAndCountByMedia = async (client, userId, date) => {
+  const { rows } = await client.query(
+    `
+    SELECT media_id, COUNT(id) FROM post p
+    WHERE user_id = ${userId}
+      AND created_at <= '${date}'
+      GROUP BY media_id
+    `
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
+
+module.exports = {
   getAllPosts, 
   getPostByUserIdAndPostId,
   getAllPostByUserId,
@@ -812,4 +828,5 @@ module.exports = {
   checkPostById,
   getFirstImgByPostId,
   getSecondImgByPostId,
-};
+  findPostsByDateAndCountByMedia,
+}

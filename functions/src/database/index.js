@@ -3,5 +3,6 @@ module.exports = {
     postDB: require('./post'),
     mediaDB: require('./media'),
     additionalDB: require('./additional'),
-    imgDB: require('./img')
+    imgDB: require('./img'),
+    statisticDB: require('./statistic')
 }

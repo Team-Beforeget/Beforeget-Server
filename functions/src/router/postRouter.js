@@ -1,13 +1,21 @@
 const express = require('express');
+<<<<<<< HEAD
+=======
+const router = express.Router();
+>>>>>>> feat/statistic-first
 const uploadImage = require('../middlewares/uploadImage');
 const { 
     getAllPostController, 
     postUploadController, 
     postFilterController, 
+<<<<<<< HEAD
     getOnePostController,
     postUpdateController, postDeleteController } = require('../controllers/postController');
 const router = express.Router();
 
+=======
+    getOnePostController } = require('../controllers/postController');
+>>>>>>> feat/statistic-first
 
 router.get('/', getAllPostController);
 router.get('/filter',postFilterController);
@@ -23,5 +31,8 @@ module.exports = router;
 //.eyJpZCI6MiwiZW1haWwiOiJhYmNkZTEyMzRAZmdoaS5jb20iLCJuaWNrIjoi7IKs7Jqp7J6QIiwiaWRGaXJlYmFzZSI6IjRIcGdHbkYwWnhNcHd3TXFjcmpjYUZiMHp0QzMiLCJpYXQiOjE2NDE4MTM3ODksImV4cCI6MTY0MzAyMzM4OSwiaXNzIjoiY2hhbndvbyJ9
 //.POkRYQeiAf8YS06IuLi65eLCMl57q_XncmCgq0vzrXI
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> feat/statistic-first
 

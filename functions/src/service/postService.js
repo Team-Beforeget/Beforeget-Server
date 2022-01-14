@@ -283,6 +283,10 @@ const getFilterService = async (req) => {
     
     return posts;
   } catch (error) {
+    functions.logger.error(
+      `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
+      `[CONTENT] ${error}`
+    );
     console.log(error);
     // DB 에러
     return -1;
@@ -343,6 +347,10 @@ const getOnePostService = async (req) => {
       return posts;
     }
   } catch (error) {
+    functions.logger.error(
+      `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
+      `[CONTENT] ${error}`
+    );
     console.log(error);
     // DB 에러
     return -1;
