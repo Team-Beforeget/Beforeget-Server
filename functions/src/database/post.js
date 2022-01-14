@@ -652,6 +652,21 @@ const countPostsByMedia = async (client, userId) => { //유형별 사용자 기�
   return convertSnakeToCamel.keysToCamel(rows);
 };
 
+
+
+
+const findPostsByDateAndCountByMedia = async (client, userId, date) => {
+  const { rows } = await client.query(
+    `
+    SELECT media_id, COUNT(id) FROM post p
+    WHERE user_id = ${userId}
+      AND created_at <= '${date}'
+      GROUP BY media_id
+    `
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
 module.exports = { 
   getAllPosts, 
   getAllPostByUserId,
@@ -661,5 +676,6 @@ module.exports = {
   updatePost, 
   deletePost, 
   countPostsByMedia,
+  findPostsByDateAndCountByMedia,
   getImgByPostId,
 };
