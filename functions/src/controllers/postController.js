@@ -7,8 +7,7 @@ const {
   getFilterService, 
   getOnePostService,
   postUpdateService,
-  postDeleteService
- } = require("../service/postService");
+  postDeleteService } = require("../service/postService");
 
 /**
  *  @포스트 전체 조회

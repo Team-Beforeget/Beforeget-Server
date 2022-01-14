@@ -44,7 +44,7 @@ const getPostByUserIdAndPostId = async (client, userId, postId) => {
 
 
 
-// TODO: 일단 해결은 했는데,,, start,end 값이 date,today에 들어감 ㅅㅂ 왜?
+// FIXME  // TODO: 일단 해결은 했는데,,, start,end 값이 date,today에 들어감 ㅅㅂ 왜? 그리고 말도 안되게 길어 ㅅㅂ
 const filterUserPost = async (client, userId, date, today, start, end, mediaIds, starIds) => {
 
   const now = dayjs();
@@ -812,5 +812,4 @@ module.exports = {
   checkPostById,
   getFirstImgByPostId,
   getSecondImgByPostId,
-
 };
