@@ -99,7 +99,6 @@ const updatePost = async (client, postId, media, date, star, title, oneline, com
   if (existingRows.length === 0) return false;
 
 
-
   const data = _.merge({}, convertSnakeToCamel.keysToCamel(existingRows[0]), { media, date, star, title, oneline, comment });
 
 
