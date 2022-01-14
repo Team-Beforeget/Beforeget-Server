@@ -76,7 +76,7 @@ const addPost = async (client, userId, mediaId, date, star, title, oneline, comm
 
 
 
-const updatePost = async (client, title, content, postId) => {
+const updatePost = async (client, postId, media, date, star, title, oneline, comment) => {
 
   const { rows: existingRows } = await client.query(
 
@@ -100,7 +100,7 @@ const updatePost = async (client, title, content, postId) => {
 
 
 
-  const data = _.merge({}, convertSnakeToCamel.keysToCamel(existingRows[0]), { title, content });
+  const data = _.merge({}, convertSnakeToCamel.keysToCamel(existingRows[0]), { media, date, star, title, oneline, comment });
 
 
 
@@ -110,15 +110,15 @@ const updatePost = async (client, title, content, postId) => {
 
     UPDATE post p
 
-    SET title = $1, content = $2, updated_at = now()
+    SET media_id=$1, created_at=$2, star=$3, title=$4, oneline=$5, comment=$6
 
-    WHERE id = $3
+    WHERE id = $7
 
     RETURNING * 
 
     `,
 
-    [data.title, data.content, postId],
+    [data.media, data.date, data.star, data.title, data.oneline, data.comment, postId],
 
   );
 
@@ -187,6 +187,27 @@ const deletePost = async (client, postId) => {
 
 };
 
+const checkPostById = async (client, postId) => {
+
+  const { rows } = await client.query(
+
+    `
+
+    SELECT * FROM post p
+
+    WHERE id = $1
+
+      AND is_deleted = FALSE
+
+    `,
+
+    [postId],
+
+  );
+
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+
+};
 
 const countPostsByMedia = async (client, userId) => { //유형별 사용자 기록 수
 
@@ -213,4 +234,4 @@ const countPostsByMedia = async (client, userId) => { //유형별 사용자 기�
 };
 
 
-module.exports = { getAllPosts, getPostById, addPost, updatePost, deletePost, countPostsByMedia };
+module.exports = { getAllPosts, getPostById, addPost, updatePost, deletePost, countPostsByMedia, checkPostById };
