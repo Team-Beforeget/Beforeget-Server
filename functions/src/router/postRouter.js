@@ -7,10 +7,9 @@ const {
     postFilterController, 
     getOnePostController } = require('../controllers/postController');
 
-router.post('/upload', uploadImage, postUploadController);
 router.get('/', getAllPostController);
 router.get('/filter',postFilterController);
-router.post('/upload',postUploadController);
+router.post('/upload', uploadImage, postUploadController);
 router.get('/:postId', getOnePostController);
 
 module.exports = router;
