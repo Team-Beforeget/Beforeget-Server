@@ -28,6 +28,20 @@ const getAllPostByUserId = async (client, userId) => {
 
 
 
+const getPostByUserIdAndPostId = async (client, userId, postId) => {
+  const { rows } = await client.query(
+    `
+    SELECT id, user_id, title, media_id as category, created_at as date, star, oneline, comment
+    FROM post p
+    WHERE user_id = $1
+      AND id = $2
+    `,
+    [userId, postId]
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
+
 
 
 // TODO: 일단 해결은 했는데,,, start,end 값이 date,today에 들어감 ㅅㅂ 왜?
@@ -568,7 +582,7 @@ const getOnePostById = async (client, postId, userId) => {
 const getFirstImgByPostId = async (client, postId) => {
   const { rows } = await client.query(
     `
-    SELECT img_title1, img_url1 FROM img
+    SELECT img_title1 as type, img_url1 FROM img
     WHERE post_id = $1
     `,
     [postId]
@@ -580,7 +594,7 @@ const getFirstImgByPostId = async (client, postId) => {
 const getSecondImgByPostId = async (client, postId) => {
   const { rows } = await client.query(
     `
-    SELECT img_title2, img_url2 FROM img
+    SELECT img_title2 as type, img_url2 FROM img
     WHERE post_id = $1
     `,
     [postId]
@@ -667,6 +681,7 @@ const countPostsByMedia = async (client, userId) => { //유형별 사용자 기�
 
 module.exports = { 
   getAllPosts, 
+  getPostByUserIdAndPostId,
   getAllPostByUserId,
   getOnePostById, 
   filterUserPost,
