@@ -91,30 +91,38 @@ const postUploadService = async (req, res) => {
 
 const getFilterService = async (req) => {
   const { date, media, star } = req.query;
-  
+
   let client;
   try {
     client = await db.connect();
     // date 처리
     const today = dayjs();
     today.format();
-
-    let newDate, start, end;
+    
+    let isDate, newDate, now, start, end;
     if (parseInt(date) === 1) { // 1개월 차감
       newDate = today.subtract(1, 'month').format('YYYY-MM-DD');
+      now = today.format('YYYY-MM-DD');
     } else if (parseInt(date) === 3) { // 3개월 차감
       newDate = today.subtract(3, 'month').format('YYYY-MM-DD');
+      now = today.format('YYYY-MM-DD');
     } else if (parseInt(date) === 14) { // 14일 차감
       newDate = today.subtract(14, 'day').format('YYYY-MM-DD');
-    } else if (date.length === 0) { // date에 공백 들어오면 그냥 기본날짜 보내주면 되나? => 질문필요
+      now = today.format('YYYY-MM-DD');
+    } else if (date.length === 0) { // date에 공백 들어오면 검색 안함
       newDate = today.format('YYYY-MM-DD');
+    } else if (date.length === 10) { // date = 2022-04-02 형태
+      now = today.format('YYYY-MM-DD');
+      newDate = date;
     } else { // date = '2022-01-05,2022-04-02'형태일 때
-        newDate = date.split(',');
-        start = newDate[0];
-        end = newDate[1];
-      }
+      isDate = date.split(',');
+      newDate = isDate[0];
+      now = isDate[1];
+    }
+    // 지금 계속 start end가 안들어가고 date today가 들어감 ㅆㅂ 말이돼??
 
 
+  
 
     // media(category)중복선택 처리 
     let newMedia;
@@ -127,10 +135,6 @@ const getFilterService = async (req) => {
     } else if (media.split(',').length === 1) { // 하나만 선택
       mediaIds = parseInt(media);
     }
-    // 하나 받을때
-    console.log(mediaIds); // 1
-    console.log(mediaIds.toString().length); // 1
-    console.log(mediaIds.length); // undefined
 
 
 
@@ -145,20 +149,21 @@ const getFilterService = async (req) => {
     } else if (star.split(',').length === 1) { // 하나만 선택
       starIds = parseInt(star);
     }
-    // 공백 받을때
-    console.log(starIds); // NaN
-    console.log(starIds.toString().length); // 3
-    console.log(starIds.length); // undefined
     
 
-
     const userId = req.user.id;
-    // date 필터링이 문제다~~~~~~~~~~~~~
-    const posts = await postDB.filterUserPost(client, userId, newDate, start, end, mediaIds, starIds); 
-    // default 필터링 안했을 때 포스트 전체 조회
-    // eslint-disable-next-line use-isnan
+    const posts = await postDB.filterUserPost(client, userId, newDate, now, start, end, mediaIds, starIds);
+    
+    // 한줄평 하나만 반환!!!!!!!!!
+    const oneline = posts.map(o => o.oneline);
 
-    const allPost = await postDB.getAllPostByUserId(client, userId);
+    for (let i = 0; i < oneline.length; i++) {
+      posts[i].oneline = oneline[i][0];
+    }
+    // 필터 결과 해당 포스트 없음
+    if (posts.length === 0) {
+      return -2;
+    }
     
     return posts;
   } catch (error) {

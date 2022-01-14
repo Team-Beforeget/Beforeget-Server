@@ -14,42 +14,42 @@ const {
  */
 
 const getAllPostController = async (req, res) => {
-    try {
-        const data = await getAllPostService(req);
-        // DB 에러
-        if (data === -1) {
-            return res
-                .status(statusCode.DB_ERROR)
-                .send(util.fail(
-                    statusCode.DB_ERROR, 
-                    responseMessage.DB_ERROR
-                ));
-        }
-        // 등록된 포스트 없음
-        else if (data === -2) {
-            return res
-                .status(statusCode.DB_ERROR)
-                .send(util.fail(
-                    statusCode.DB_ERROR, 
-                    responseMessage.DB_ERROR
-                ));
-        }
-        // 포스트 전체 조회 성공
-        res
-            .status(statusCode.OK)
-            .send(util.success(
-                statusCode.OK, 
-                responseMessage.READ_ALL_POSTS_SUCCESS, 
-                data
-            ));
-    } catch (error) {
-        return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
+  try {
+    const data = await getAllPostService(req);
+    // DB 에러
+    if (data === -1) {
+      return res
+        .status(statusCode.DB_ERROR)
         .send(util.fail(
-          statusCode.INTERNAL_SERVER_ERROR, 
-          responseMessage.INTERNAL_SERVER_ERROR
+          statusCode.DB_ERROR, 
+          responseMessage.DB_ERROR
         ));
     }
+    // 등록된 포스트 없음
+    else if (data === -2) {
+      return res
+        .status(statusCode.DB_ERROR)
+        .send(util.fail(
+          statusCode.DB_ERROR, 
+          responseMessage.DB_ERROR
+        ));
+    }
+    // 포스트 전체 조회 성공
+    res
+      .status(statusCode.OK)
+      .send(util.success(
+        statusCode.OK, 
+        responseMessage.READ_ALL_POSTS_SUCCESS, 
+        data
+      ));
+  } catch (error) {
+      return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(util.fail(
+        statusCode.INTERNAL_SERVER_ERROR, 
+        responseMessage.INTERNAL_SERVER_ERROR
+      ));
+  }
 };
 
 /**
@@ -82,8 +82,32 @@ const postUploadController= async (req, res) => {
 const postFilterController = async (req, res) => {
   try {
     const data = await getFilterService(req);
-
-    res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.REQUEST_SUCCESS, data));
+    // DB에러
+    if (data === -1) {
+      return res
+        .status(statusCode.DB_ERROR)
+        .send(util.fail(
+          statusCode.DB_ERROR, 
+          responseMessage.DB_ERROR
+        ));
+    }
+    // 필터 결과 해당 포스트 없음
+    else if (data === -2) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(
+          statusCode.BAD_REQUEST, 
+          responseMessage.NO_POST
+        ));
+    } 
+    // 포스트 조회 성공
+    res
+      .status(statusCode.OK)
+      .send(util.success(
+        statusCode.OK, 
+        responseMessage.REQUEST_SUCCESS, 
+        data
+      ));
 
   } catch (error) {
     return res
