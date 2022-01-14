@@ -39,7 +39,7 @@ const getFirstStatisticController = async (req, res) => {
                 .status(statusCode.OK)
                 .send(util.success(
                     statusCode.OK, 
-                    responseMessage.OK, 
+                    responseMessage.REQUEST_SUCCESS, 
                     data
                 ));
         }
