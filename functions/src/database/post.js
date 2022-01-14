@@ -150,9 +150,7 @@ const deletePost = async (client, postId) => {
 
     `
 
-    UPDATE additional a
-
-    SET is_deleted = TRUE
+    DELETE FROM additional
 
     WHERE post_id = $1
 
@@ -167,9 +165,7 @@ const deletePost = async (client, postId) => {
 
     `
 
-    UPDATE img i
-
-    SET is_deleted = TRUE
+    DELETE FROM img
 
     WHERE post_id = $1
 
