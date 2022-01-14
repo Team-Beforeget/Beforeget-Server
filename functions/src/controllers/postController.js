@@ -129,7 +129,7 @@ const getOnePostController = async (req, res) => {
   try {
     const myData = await getOnePostService(req);
 
-    res.status(statusCode.OK).send(util.success(statusCode.ok, responseMessage.SEARCH_POST_SUCCESS, myData));
+    res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.SEARCH_POST_SUCCESS, myData));
     
   } catch (error) {
     return res

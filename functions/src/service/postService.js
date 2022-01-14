@@ -187,10 +187,13 @@ const getOnePostService = async (req) => {
     
     const userId = req.user.id;
      
-    const img = postDB.getImgByPostId(client, postId);
-    const add = additionalDB.getAdditionalByPostId(client, postId);
+    const img1 = await postDB.getFirstImgByPostId(client, postId);
+    const img2 = await postDB.getSecondImgByPostId(client, postId);
+    const add = await additionalDB.getAdditionalByPostId(client, postId);
+
+    //img1.img2 = img2;
     //const addObj = Object
-    return add;
+    return { img1, img2, add };
 
     //const myPost = await postDB.getOnePostById(client, postId, userId);
   } catch (error) {

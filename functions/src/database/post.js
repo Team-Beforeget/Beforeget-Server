@@ -565,16 +565,29 @@ const getOnePostById = async (client, postId, userId) => {
 
 
 
-const getImgByPostId = async (client, postId) => {
+const getFirstImgByPostId = async (client, postId) => {
   const { rows } = await client.query(
     `
-    SELECT title imgTitle, url imgUrl FROM img
+    SELECT img_title1, img_url1 FROM img
     WHERE post_id = $1
     `,
     [postId]
   );
   return convertSnakeToCamel.keysToCamel(rows);
 };
+
+
+const getSecondImgByPostId = async (client, postId) => {
+  const { rows } = await client.query(
+    `
+    SELECT img_title2, img_url2 FROM img
+    WHERE post_id = $1
+    `,
+    [postId]
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
 
 
 
@@ -661,5 +674,6 @@ module.exports = {
   updatePost, 
   deletePost, 
   countPostsByMedia,
-  getImgByPostId,
+  getFirstImgByPostId,
+  getSecondImgByPostId,
 };
