@@ -66,6 +66,33 @@ const getUserByToken = async (client, refreshtoken) => {
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
 
+const logoutUserByDeleteToken = async (client, idFirebase, token) => {
+  const { rows: existingRows } = await client.query(
+    `
+    SELECT * FROM "user" u
+    WHERE id_firebase = $1
+      AND is_deleted = FALSE
+    `,
+    [idFirebase]
+  );
+  if (!existingRows.length === 0) {
+    return false;
+  }
+
+  const data = _.merge({}, convertSnakeToCamel.keysToCamel(existingRows[0]), { token });
+
+  const { rows } = await client.query(
+    `
+    UPDATE "user" u
+    SET token = $1
+    WHERE id_firebase = $2
+    RETURNING *
+    `,
+    [data.token, idFirebase]
+  );
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+};
+
 const getAllUsers = async (client) => {
     const { rows } = await client.query(
       `
@@ -77,4 +104,4 @@ const getAllUsers = async (client) => {
 };
 
 
-module.exports = { addUser, getUserByIdFIrebase, updateUserToken, getUserByToken, getAllUsers };
+module.exports = { addUser, getUserByIdFIrebase, updateUserToken, getUserByToken, logoutUserByDeleteToken, getAllUsers };
