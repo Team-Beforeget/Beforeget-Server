@@ -4,7 +4,8 @@ const {
     getAllPostController, 
     postUploadController, 
     postFilterController, 
-    getOnePostController} = require('../controllers/postController');
+    getOnePostController,
+    postUpdateController, postDeleteController } = require('../controllers/postController');
 const router = express.Router();
 
 
@@ -12,6 +13,8 @@ router.get('/', getAllPostController);
 router.get('/filter',postFilterController);
 router.post('/upload', uploadImage, postUploadController);
 router.get('/:postId', getOnePostController);
+router.put('/:postId/edit', uploadImage, postUpdateController);
+router.delete('/:postId/delete', postDeleteController);
 
 module.exports = router;
 
