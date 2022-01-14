@@ -111,9 +111,6 @@ const getFilterService = async (req) => {
       now = today.format('YYYY-MM-DD');
     } else if (date.length === 0) { // date에 공백 들어오면 검색 안함
       newDate = today.format('YYYY-MM-DD');
-    } else if (date.length === 10) { // date = 2022-04-02 형태
-      now = today.format('YYYY-MM-DD');
-      newDate = date;
     } else { // date = '2022-01-05,2022-04-02'형태일 때
       isDate = date.split(',');
       newDate = isDate[0];
@@ -153,7 +150,7 @@ const getFilterService = async (req) => {
 
     const userId = req.user.id;
     const posts = await postDB.filterUserPost(client, userId, newDate, now, start, end, mediaIds, starIds);
-    
+
     // 한줄평 하나만 반환!!!!!!!!!
     const oneline = posts.map(o => o.oneline);
 
