@@ -832,7 +832,7 @@ const getFourthStatistic = async (client, userId, date) => {
   
   };
 
-  
+
 const getCreatedAtByUserId = async (client, userId) => {
 
     const { rows } = await client.query(
