@@ -299,19 +299,49 @@ const getFilterService = async (req) => {
 
 const getOnePostService = async (req) => {
   const { postId } = req.params;
+  // 요청 파라미터 없음
+  if (!postId) {
+    return -2;
+  }
 
   let client;
   try {
     client = await db.connect();
     
     const userId = req.user.id;
-     
-    const img = postDB.getImgByPostId(client, postId);
-    const add = additionalDB.getAdditionalByPostId(client, postId);
-    //const addObj = Object
-    return add;
 
-    //const myPost = await postDB.getOnePostById(client, postId, userId);
+    const posts = await postDB.getPostByUserIdAndPostId(client, userId, postId);
+    // 포스트 없음
+    if (!posts) {
+      return -3;
+    }
+
+    const img = await postDB.getFirstImgByPostId(client, postId);
+    const img2 = await postDB.getSecondImgByPostId(client, postId);
+    const add = await additionalDB.getAdditionalByPostId(client, postId);
+
+    // 이미지 추가 안함 
+    if (img[0].type === null) {
+      posts[0].additional = add;
+      return posts;
+    } 
+    // 이미지 하나만 추가
+    else if (img2[0].type === null) {
+      add.push(img[0]);
+      posts[0].additional = add;
+      return posts;
+    } 
+    // 이미지 두개 추가 && 데이터 가공 for 클라이언트
+    else {
+      img.push(img2[0]);
+      for (let i = 0; i < img.length; i++) {
+        add.push(img[i]);
+      }
+  
+      posts[0].additional = add;
+  
+      return posts;
+    }
   } catch (error) {
     console.log(error);
     // DB 에러
