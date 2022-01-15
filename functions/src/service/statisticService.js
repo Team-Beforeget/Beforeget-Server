@@ -117,7 +117,8 @@ const getFourthStatisticService = async (req, res) => {
         }
       })
     
-    console.log(oneline)
+
+    const total = [oneline['Movie'], oneline['Book'], oneline['TV'], oneline['Music'], oneline['Webtoon'], oneline['Youtube']];
 
     for(let i in oneline){ //i는 미디어유형
 
@@ -155,15 +156,14 @@ const getFourthStatisticService = async (req, res) => {
               arr.pop();
             }
           }
-
-          console.log(arr)
           
         }
         oneline[i] = arr;
       }
     }
+
       data['oneline'] = oneline;
-      return data;
+      return {data, total};
 
     } catch (error) {
         console.log(error)
@@ -175,7 +175,74 @@ const getFourthStatisticService = async (req, res) => {
   };
   
 
+const getTotalStatisticService = async (req, res) => {
+  //한 달 유형별 한줄평 3개씩
+    const media = ["Movie","Book","TV","Music","Webtoon","Youtube"]
+
+    let client;
+    let data = { start:"", graphic:"", oneline:[], monthly:[], media:[]};
+    let {date} = req.params;
+    if(!date){ return -2; }
+
+    try {
+      client = await db.connect(req);
+      
+      const start = await postDB.getCreatedAtByUserId(client, req.user.id);
+      data['start'] = dayjs(start.date).format('YYYY-MM')
+  
+      const media = await getThirdStatisticService(req);
+      data['media'] = media['arr'];
+
+      const { total } = await getFourthStatisticService(req);
+
+      let total_count = {};
+
+      let total_result = [];
+
+      for(let row of total){
+        for(let key in row){
+          if(Object.keys(total_count).includes(key)){
+            total_count[key] += row[key];
+          }else{
+            total_count[key] = row[key];
+          }
+        }
+      }
+
+
+      var sortable = [];
+      for (let name in total_count) {
+        sortable.push([name, total_count[name]]);
+      }
+
+      sortable.sort(function(a, b) {
+        return  b[1]-a[1];
+      });
+
+
+      let idx = 1;
+      for(let i of sortable){
+        if(idx > 3){ break; }
+        total_result.push(i[0]);
+        idx++;
+      }
+      console.log(total_result)
+      data['oneline'] = total_result;
+
+      return data;
+
+    } catch (error) {
+        console.log(error)
+        return -5;
+
+    } finally {
+      client.release();
+    }
+  };
+
+    
 module.exports = {
     getThirdStatisticService,
-    getFourthStatisticService
+    getFourthStatisticService,
+    getTotalStatisticService
 }
