@@ -18,8 +18,9 @@ module.exports = {
   LOGOUT_SUCCESS: "로그아웃 되었습니다.",
   LOGOUT_FAIL: '로그아웃 실패',
   NO_USER: "존재하지 않는 회원입니다.",
-  MISS_MATCH_PW: "비밀번호가 맞지 않습니다.",
+  MISS_MATCH_PW: "비밀번호를 확인해주세요.",
   INVALID_EMAIL: "이메일 형식이 잘못되었습니다.",
+  NO_EMAIL: "존재하지 않는 이메일입니다.",
 
   // 프로필 조회
   READ_PROFILE_SUCCESS: "프로필 조회 성공",
@@ -48,6 +49,6 @@ module.exports = {
   // 토큰
   TOKEN_EXPIRED: "토큰이 만료되었습니다.",
   TOKEN_INVALID: "토큰이 유효하지 않습니다.",
-  TOKEN_EXPIRED_OR_INVALID: "토믄이 만료되었가나 유효하지 않습니다",
+  TOKEN_EXPIRED_OR_INVALID: "토큰이 만료되었가나 유효하지 않습니다",
   TOKEN_EMPTY: "토큰이 없습니다.",
 };
