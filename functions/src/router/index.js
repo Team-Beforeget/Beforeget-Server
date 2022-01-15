@@ -7,5 +7,5 @@ router.use(checkUserByToken);
 router.use('/home', require('./homeRouter'));
 router.use('/category', require('./categoryRouter'));
 router.use('/post', require('./postRouter'));
-
+router.use('/statistic', require('./statisticRouter'));
 module.exports = router;

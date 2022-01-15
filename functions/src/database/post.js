@@ -769,7 +769,67 @@ const getPostById = async (client, postId) => {
 
 };
 
+const getThridStatistic = async (client, userId, date) => {
+//한 달 간
+  let start = `${date}-01`;
+  let end = `${date}-02`;
+  start = dayjs(start).format('YYYY-MM-DD');
+  end = dayjs(end).endOf("month").format('YYYY-MM-DD');
+  const { rows } = await client.query(
 
+    `
+
+    SELECT media_id, count(id) FROM post p
+
+    WHERE user_id = $1
+
+      AND is_deleted = FALSE
+
+      AND created_at BETWEEN '${start}' AND '${end}'
+
+      GROUP BY media_id
+
+      ORDER BY count(id) DESC
+      
+      LIMIT 3
+
+
+    `,
+
+    [userId],
+
+  );
+
+  return convertSnakeToCamel.keysToCamel(rows);
+
+};
+
+const getCreatedAtByUserId = async (client, userId) => {
+
+    const { rows } = await client.query(
+  
+      `
+  
+      SELECT created_at as date FROM post
+  
+      WHERE user_id = $1
+  
+        AND is_deleted = FALSE
+  
+        ORDER BY created_at ASC
+        
+        LIMIT 1
+  
+  
+      `,
+  
+      [userId],
+  
+    );
+  
+    return convertSnakeToCamel.keysToCamel(rows[0]);
+  
+  };
 
 module.exports = { 
   getAllPosts, 
@@ -782,5 +842,7 @@ module.exports = {
   deletePost, 
   countPostsByMedia,
   getImgByPostId,
-  checkPostById
+  checkPostById,
+  getThridStatistic,
+  getCreatedAtByUserId
 };
