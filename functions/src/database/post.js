@@ -798,20 +798,48 @@ const getPostById = async (client, postId) => {
 
 
 
-
-
-
-const findPostsByDateAndCountByMedia = async (client, userId, date) => {
+// FIXME: 지난 한달의 기록이라 범위 바꿔줘야함
+const findPostsByDateAndCountByMedia = async (client, userId, start, end) => {
   const { rows } = await client.query(
     `
     SELECT media_id, COUNT(id) FROM post p
     WHERE user_id = ${userId}
-      AND created_at <= '${date}'
+      AND created_at BETWEEN '${start}' AND '${end}'
       GROUP BY media_id
     `
   );
   return convertSnakeToCamel.keysToCamel(rows);
 };
+
+
+// TODO: group by - having 써서 날짜 범위 기준으로 post개수 세보기
+const countPostsIdInDate = async (client, userId, date, lastDay) => {
+  const { rows } = await client.query(
+    `
+    SELECT created_at, SUM(id) FROM post p
+    WHERE user_id = ${userId}
+      AND created_at BETWEEN '${date}-01' AND '${date}-${lastDay}'
+      GROUP BY created_at
+    `
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
+
+
+const countPostsInDate = async (client, userId, date, lastDay) => {
+  const { rows } = await client.query(
+    `
+    SELECT created_at, COUNT(created_at) FROM post p
+    WHERE user_id = ${userId}
+      GROUP BY created_at HAVING created_at BETWEEN '${date}-01' AND '${date}-${lastDay}'
+    `
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+}
+
+
+
 
 
 module.exports = {
@@ -829,4 +857,6 @@ module.exports = {
   getFirstImgByPostId,
   getSecondImgByPostId,
   findPostsByDateAndCountByMedia,
+  countPostsIdInDate,
+  countPostsInDate
 }

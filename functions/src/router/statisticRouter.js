@@ -1,7 +1,9 @@
 const express = require('express');
-const { getFirstStatisticController } = require('../controllers/statisticController');
+const { getFirstStatisticController, getSecondStatisticController } = require('../controllers/statisticController');
+const { getSecondStatisticService } = require('../service/statisticService');
 const router = express.Router();
 
 router.get('/first/:date', getFirstStatisticController);
+router.get('/second/:date', getSecondStatisticController);
 
 module.exports = router;

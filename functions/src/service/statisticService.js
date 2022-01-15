@@ -17,7 +17,8 @@ const getFirstStatisticService = async (req) => {
         return -2;
     }
 
-    const newDate = dayjs(date).format('YYYY-MM-01');
+    const lastDate = `${date}-${dayjs(date).daysInMonth()}`;
+    const startDate = `${date}-01`;
     const month = dayjs(date).format('MM');
 
     let client;
@@ -26,8 +27,9 @@ const getFirstStatisticService = async (req) => {
 
         const userId = req.user.id;
 
-        const media = await postDB.findPostsByDateAndCountByMedia(client, userId, newDate);
+        const media = await postDB.findPostsByDateAndCountByMedia(client, userId, startDate, lastDate);
 
+        // TODO: 해당 달의 기록 없을 때 에러처리
         console.log((_.sortBy(media, 'count').reverse())[0].mediaId); // 가장 많이 기록한 미디어가 몇번 미디어인지~~~~
         const isManyMediaId = (_.sortBy(media, 'count').reverse())[0].mediaId; // 미디어 count 후 내림차순 정렬 
         // 다양한 경우의 수: 기록한 개수가 같을때 등등~~
@@ -91,4 +93,94 @@ const getFirstStatisticService = async (req) => {
     }
 };
 
-module.exports = { getFirstStatisticService };
+/**
+ *  @통계 나의기록 통계 두번째 
+ *  @route GET /statistic/second/:date/:count
+ *  @access private
+ */
+
+const getSecondStatisticService = async (req) => {
+    const { date, count } = req.params;
+    console.log(date);
+    // 요청 파라미터 부족
+    // if (!date || !count) {
+    //     return -2;
+    // }
+    
+    let client;
+    try {
+        client = await db.connect();
+        
+        // X개의 기록을 남겼어요.
+        const userId = req.user.id;
+        const lastDay = dayjs(date).daysInMonth(); // 받아온 날짜의 마지막 날
+
+        // 기본 선택 달
+        const veryLastMonthRecord = await postDB.countPostsIdInDate(client, userId, date, lastDay);
+        // 지지난달
+        // const isDate = dayjs(date).subtract(1, 'month');
+        // const theMonthBeforeLastRecord = await postDB.countPostsInDate(client, userId, isDate, lastDay);
+        
+        // let sumVeryLastMonthRecord, sumTheMonthBeforeLastRecord = new Number();
+        
+        // for (let i = 0; i < veryLastMonthRecord.length; i++) {
+        //     sumVeryLastMonthRecord += Number(veryLastMonthRecord[i].count);
+        //     sumTheMonthBeforeLastRecord += Number(theMonthBeforeLastRecord[i].count);
+        // }
+        
+        // // 지난 달보다 Y개 늘었네요/줄었네요! 
+        // // 지난달 기록 갯수와 지지난달 기록 갯수 비교
+        // const diff = (a, b) => {
+        //     let differ = a - b > 0 ? `늘었네요` : `줄었네요`
+        //     let absolute = Math.abs(a-b);
+        //     return `${a}개의 기록을 남겼어요.\n지난달보다 ${absolute}개 ${differ}.`;
+        // }
+        // const firstComment = diff(sumVeryLastMonthRecord, sumTheMonthBeforeLastRecord);
+
+        // // A월로, n개의 기록을 남겼어요!
+        // let month, newDate;
+        // const lastDay = dayjs(date).daysInMonth(); // 받아온 날짜의 마지막 날
+        // // Z월부터 N개월간 가장 많은 기록을 남긴 달은
+        // // 3개월 선택
+        // let sumOfRecord = new Number();
+        // const compareArray  = new Array();
+        // if (count === 3) {
+        //     month = dayjs(date).subtract(2, 'month').format('MM');
+        //     for (let i = 1; i <= count; i++) {
+        //         newDate = dayjs(date).subtract(i, 'month');
+        //         let record = await postDB.countPostsInDate(client, userId, newDate, lastDay);
+
+        //         for (let i = 0; i < record.length; i++) {
+        //             sumOfRecord += Number(record[i].count);
+        //         }
+        //         compareArray.push(sumOfRecord);
+        //     }
+        //     compareArray.sort((a, b) => b - a);
+        //     return `${month}월 부터 ${count}간 가장 많은 기록을 남긴 달은`;
+        // }
+        // // 5개월 선택
+        // else if (count === 5) {
+        //     month = dayjs(date).subtract(4, 'month').format('MM');
+        //     return `${month}월 부터 ${count}간 가장 많은 기록을 남긴 달은`;
+        // } 
+        // // 3, 5 외에는 오류
+        // else {
+        //     return -3;
+        // }
+        return veryLastMonthRecord;  
+            
+    } catch (error) {
+        functions.logger.error(
+            `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
+            `[CONTENT] ${error}`
+        );
+        console.log(error);
+      // DB 에러
+      return -1;
+    } finally {
+        client.release();
+    }
+};
+
+
+module.exports = { getFirstStatisticService, getSecondStatisticService };
