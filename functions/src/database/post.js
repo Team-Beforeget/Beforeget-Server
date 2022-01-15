@@ -804,6 +804,35 @@ const getThridStatistic = async (client, userId, date) => {
 
 };
 
+const getFourthStatistic = async (client, userId, date) => {
+  //한 달 간
+    let start = `${date}-01`;
+    let end = `${date}-02`;
+    start = dayjs(start).format('YYYY-MM-DD');
+    end = dayjs(end).endOf("month").format('YYYY-MM-DD');
+    const { rows } = await client.query(
+  
+      `
+  
+      SELECT media_id, oneline  FROM post
+  
+      WHERE user_id = $1
+  
+        AND is_deleted = FALSE
+  
+        AND created_at BETWEEN '${start}' AND '${end}'
+  
+      `,
+  
+      [userId],
+  
+    );
+
+    return convertSnakeToCamel.keysToCamel(rows);
+  
+  };
+
+  
 const getCreatedAtByUserId = async (client, userId) => {
 
     const { rows } = await client.query(
@@ -844,5 +873,6 @@ module.exports = {
   getImgByPostId,
   checkPostById,
   getThridStatistic,
+  getFourthStatistic,
   getCreatedAtByUserId
 };

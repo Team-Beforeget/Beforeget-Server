@@ -1,7 +1,7 @@
 const db = require('../database/db');
 const { postDB } = require('../database');
 const dayjs = require('dayjs');
-
+const _ = require('lodash');
 
 const getThirdStatisticService = async (req, res) => {
   const media = ["Movie","Book","TV","Music","Webtoon","Youtube"]
@@ -12,11 +12,12 @@ const getThirdStatisticService = async (req, res) => {
     if(!date){ return -2; }
     try {
       client = await db.connect(req);
-      const counts = await postDB.getThridStatistic(client,req.user.id, date);
 
       const start = await postDB.getCreatedAtByUserId(client, req.user.id);
-
       data['start'] = dayjs(start.date).format('YYYY-MM')
+
+      const counts = await postDB.getThridStatistic(client,req.user.id, date);
+
       let mon = `${date}-01`;
       mon = dayjs(mon).month();
       
@@ -84,7 +85,97 @@ const getThirdStatisticService = async (req, res) => {
     }
   };
 
+const getFourthStatisticService = async (req, res) => {
+  //한 달 유형별 한줄평 3개씩
+    const media = ["Movie","Book","TV","Music","Webtoon","Youtube"]
+
+    let client;
+    let data = { start:"", oneline:{"Movie":[], "Book":[], "TV":[], "Music":[], "Webtoon":[], "Youtube":[] }};
+    let {date} = req.params;
+    if(!date){ return -2; }
+
+    try {
+      client = await db.connect(req);
+
+      const start = await postDB.getCreatedAtByUserId(client, req.user.id);
+      data['start'] = dayjs(start.date).format('YYYY-MM')
+
+      const posts = await postDB.getFourthStatistic(client,req.user.id, date);
+
+      const oneline = {"Movie":[], "Book":[], "TV":[], "Music":[], "Webtoon":[], "Youtube":[] }
+
+  
+      _.forEach(posts, (row, key)=>{
+
+        for(let i of row['oneline']){
+          //oneline[media[row['mediaId']-1]]
+          if(Object.keys(oneline[media[row['mediaId']-1]]).includes(i)){ //이미 존재하는 키
+            oneline[media[row['mediaId']-1]][i] += 1;
+          }else{ //새로 받은 키
+            oneline[media[row['mediaId']-1]][i] = 1;
+          }
+        }
+      })
+    
+    console.log(oneline)
+
+    for(let i in oneline){ //i는 미디어유형
+
+      let arr = []; //순서대로 3개 푸쉬
+      if(oneline[i]){ //oneline존재
+
+        for(let j in oneline[i]){//j는 한줄평
+
+          if(arr.length == 0){
+            arr.push(j)
+          }else if(arr.length == 1){
+          
+            if(oneline[i][arr[0]]<oneline[i][j]){
+              arr.splice(0,0,j); //첫번째
+            }else{
+              arr.push(j); //두번째
+            }
+          }else if(arr.length == 2){
+            if(oneline[i][arr[0]]<oneline[i][j]){
+              arr.splice(0,0,j); //첫번째
+            }else if(oneline[i][arr[1]]<oneline[i][j]){
+              arr.splice(1,0,j); //두번째
+            }else{
+              arr.push(j); //세번째
+            }
+          }else if(arr.length == 3){
+            if(oneline[i][arr[0]]<oneline[i][j]){
+              arr.splice(0,0,j); //첫번째
+              arr.pop();
+            }else if(oneline[i][arr[1]]<oneline[i][j]){
+              arr.splice(1,0,j); //두번째
+              arr.pop();
+            }else if(oneline[i][arr[2]]<oneline[i][j]){
+              arr.splice(2,0,j); //세번째
+              arr.pop();
+            }
+          }
+
+          console.log(arr)
+          
+        }
+        oneline[i] = arr;
+      }
+    }
+      data['oneline'] = oneline;
+      return data;
+
+    } catch (error) {
+        console.log(error)
+        return -5;
+
+    } finally {
+      client.release();
+    }
+  };
+  
 
 module.exports = {
-    getThirdStatisticService
+    getThirdStatisticService,
+    getFourthStatisticService
 }
