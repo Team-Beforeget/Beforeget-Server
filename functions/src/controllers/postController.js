@@ -37,13 +37,15 @@ const getAllPostController = async (req, res) => {
         ));
     }
     // 포스트 전체 조회 성공
-    res
-      .status(statusCode.OK)
-      .send(util.success(
-        statusCode.OK, 
-        responseMessage.READ_ALL_POSTS_SUCCESS, 
-        data
-      ));
+    else {
+      res
+        .status(statusCode.OK)
+        .send(util.success(
+          statusCode.OK, 
+          responseMessage.READ_ALL_POSTS_SUCCESS, 
+          data
+        ));
+    }
   } catch (error) {
       return res
       .status(statusCode.INTERNAL_SERVER_ERROR)

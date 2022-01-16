@@ -20,6 +20,7 @@ const getAllPostByUserId = async (client, userId) => {
     SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
     FROM post p
     WHERE user_id = $1
+    ORDER BY created_at DESC
     `,
     [userId]
   );
