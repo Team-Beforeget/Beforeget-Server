@@ -51,9 +51,9 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
   // date가 공백 일 때
   if (date === now.format('YYYY-MM-DD')) {
     // media가 공백
-    if (mediaIds.toString().length === 3 && mediaIds.length === undefined) {
+    if (mediaIds === -1) {
       // star도 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -91,7 +91,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
     // media가 하나
     else if (mediaIds.toString().length === 1) {
       // star가 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -132,7 +132,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
     // media가 배열
     else if (mediaIds.length > 1) {
       // star가 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -171,9 +171,9 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
       }
     }
     // media가 공백
-    if (mediaIds.toString().length === 3 && mediaIds.length === undefined) {
+    if (mediaIds === -1) {
       // star도 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -211,7 +211,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
     // media가 하나
     else if (mediaIds.toString().length === 1) {
       // star가 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -252,7 +252,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
     // media가 배열
     else if (mediaIds.length > 1) {
       // star가 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -295,9 +295,9 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
   // date가 하나 (숫자)
   else if (date === now.subtract(1, 'month').format('YYYY-MM-DD') || now.subtract(3, 'month').format('YYYY-MM-DD') || now.subtract(14, 'day').format('YYYY-MM-DD')) {
     // media가 공백
-    if (mediaIds.toString().length === 3 && mediaIds.length === undefined) {
+    if (mediaIds === -1) {
       // star도 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -338,7 +338,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
     // media가 하나
     else if (mediaIds.toString().length === 1) {
       // star가 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -382,7 +382,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
     // media가 배열
     else if (mediaIds.length > 1) {
       // star가 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -428,9 +428,9 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
   // eslint-disable-next-line no-dupe-else-if
   else {
     // media가 공백
-    if (mediaIds.toString().length === 3 && mediaIds.length === undefined) {
+    if (mediaIds === -1) {
       // star도 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -471,7 +471,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
     // media가 하나
     else if (mediaIds.toString().length === 1) {
       // star가 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -515,7 +515,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
     // media가 배열
     else if (mediaIds.length > 1) {
       // star가 공백
-      if (starIds.toString().length === 3 && starIds.length === undefined) {
+      if (starIds === -1) {
         const { rows } = await client.query(
           `
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
@@ -887,20 +887,48 @@ const getCreatedAtByUserId = async (client, userId) => {
   
   };
 
-
-
-
-const findPostsByDateAndCountByMedia = async (client, userId, date) => {
+// FIXME: 지난 한달의 기록이라 범위 바꿔줘야함
+const findPostsByDateAndCountByMedia = async (client, userId, start, end) => {
   const { rows } = await client.query(
     `
     SELECT media_id, COUNT(id) FROM post p
     WHERE user_id = ${userId}
-      AND created_at <= '${date}'
+      AND created_at BETWEEN '${start}' AND '${end}'
       GROUP BY media_id
     `
   );
   return convertSnakeToCamel.keysToCamel(rows);
 };
+
+
+// TODO: group by - having 써서 날짜 범위 기준으로 post개수 세보기
+const countPostsIdInDate = async (client, userId, date, lastDay) => {
+  const { rows } = await client.query(
+    `
+    SELECT created_at, SUM(id) FROM post p
+    WHERE user_id = ${userId}
+      AND created_at BETWEEN '${date}-01' AND '${date}-${lastDay}'
+      GROUP BY created_at
+    `
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
+
+
+const countPostsInDate = async (client, userId, date, lastDay) => {
+  const { rows } = await client.query(
+    `
+    SELECT created_at, COUNT(created_at) FROM post p
+    WHERE user_id = ${userId}
+      GROUP BY created_at HAVING created_at BETWEEN '${date}-01' AND '${date}-${lastDay}'
+    `
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
+
+
 
 
 module.exports = {
@@ -925,6 +953,8 @@ module.exports = {
   // eslint-disable-next-line no-dupe-keys
   getSecondImgByPostId,
   findPostsByDateAndCountByMedia,
+  countPostsIdInDate,
+  countPostsInDate
 }
 
 

@@ -60,6 +60,7 @@ const postUploadService = async (req, res) => {
     try {
       client = await db.connect(req);
       const id = await postDB.addPost(client, req.user.id, media, date, star, title, oneline, comment);
+      console.log(id);
       let obj= [{},{}]
       const jsonObj = JSON.parse(additional);
       let idx=0;
@@ -222,13 +223,13 @@ const getFilterService = async (req) => {
     if (parseInt(date) === 1) { // 1개월 차감
       newDate = today.subtract(1, 'month').format('YYYY-MM-DD');
       now = today.format('YYYY-MM-DD');
-    } else if (parseInt(date) === 3) { // 3개월 차감
+    } else if (parseInt(date) === 2) { // 3개월 차감
       newDate = today.subtract(3, 'month').format('YYYY-MM-DD');
       now = today.format('YYYY-MM-DD');
-    } else if (parseInt(date) === 14) { // 14일 차감
+    } else if (parseInt(date) === 0) { // 14일 차감
       newDate = today.subtract(14, 'day').format('YYYY-MM-DD');
       now = today.format('YYYY-MM-DD');
-    } else if (date.length === 0) { // date에 공백 들어오면 검색 안함
+    } else if (parseInt(date) === -1) { // date에 공백 들어오면 검색 안함
       newDate = today.format('YYYY-MM-DD');
     } else { // date = '2022-01-05,2022-04-02'형태일 때
       isDate = date.split(',');
@@ -250,6 +251,8 @@ const getFilterService = async (req) => {
       }
     } else if (media.split(',').length === 1) { // 하나만 선택
       mediaIds = parseInt(media);
+    } else {
+      mediaIds = parseInt(media);
     }
 
 
@@ -263,6 +266,8 @@ const getFilterService = async (req) => {
         starIds[i] = parseInt(newStar[i]);
       }
     } else if (star.split(',').length === 1) { // 하나만 선택
+      starIds = parseInt(star);
+    } else {
       starIds = parseInt(star);
     }
     
