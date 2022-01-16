@@ -28,9 +28,10 @@ const getFirstStatisticService = async (req) => {
         const userId = req.user.id;
         
         const media = await postDB.findPostsByDateAndCountByMedia(client, userId, startDate, lastDate);
-        
-        // TODO: 해당 달의 기록 없을 때 에러처리
-        console.log((_.sortBy(media, 'count').reverse())[0].mediaId); // 가장 많이 기록한 미디어가 몇번 미디어인지~~~~
+        if (media.length === 0) {
+          return -3;
+        }
+        //console.log((_.sortBy(media, 'count').reverse())[0].mediaId); // 가장 많이 기록한 미디어가 몇번 미디어인지~~~~
         const isManyMediaId = (_.sortBy(media, 'count').reverse())[0].mediaId; // 미디어 count 후 내림차순 정렬 
         // 다양한 경우의 수: 기록한 개수가 같을때 등등~~
         const firstPage = await statisticDB.getFirstStatisticPage(client, isManyMediaId);
