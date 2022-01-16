@@ -4,6 +4,6 @@ const { getSecondStatisticService } = require('../service/statisticService');
 const router = express.Router();
 
 router.get('/first/:date', getFirstStatisticController);
-router.get('/second/:date', getSecondStatisticController);
+router.get('/second/:date/:count', getSecondStatisticController);
 
 module.exports = router;
