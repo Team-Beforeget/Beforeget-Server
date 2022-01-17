@@ -25,6 +25,12 @@ const getAllPostService = async (req) => {
         if (allPost.length === 0) {
             return -2;
         }
+        
+        let newDate;
+        for (let i =0; i < allPost.length; i++) {
+          newDate = dayjs(allPost[i].date).format('YYYY-MM-DD');
+          allPost[i].date = newDate;
+        }
         // 한줄평 하나만 반환!!!!!!!!!
         const oneline = allPost.map(o => o.oneline);
 
@@ -324,31 +330,61 @@ const getOnePostService = async (req) => {
     if (!posts) {
       return -3;
     }
+    console.log(posts[0].date);
+    const newDate = dayjs(posts[0].date).format('YYYY-MM-DD');
 
     const img = await postDB.getFirstImgByPostId(client, postId);
     const img2 = await postDB.getSecondImgByPostId(client, postId);
     const add = await additionalDB.getAdditionalByPostId(client, postId);
 
-    // 이미지 추가 안함 
-    if (img[0].type === null) {
-      posts[0].additional = add;
+    // 추가 항목 없음
+    if (img.length === 0 && img2.length === 0 && add.length === 0) {
+      posts[0].date = newDate;
       return posts;
     } 
     // 이미지 하나만 추가
-    else if (img2[0].type === null) {
+    else if (img.length > 0 && img2.length === 0 && add.length === 0) {
       add.push(img[0]);
+      posts[0].date = newDate;
       posts[0].additional = add;
+
       return posts;
     } 
-    // 이미지 두개 추가 && 데이터 가공 for 클라이언트
+    // 이미지 두개만 추가 && 데이터 가공 for 클라이언트
+    else if (img.length > 0 && img2.length > 0 && add.length === 0) {
+      img.push(img2[0]);
+      for (let i = 0; i < img.length; i++) {
+        add.push(img[i]);
+      }
+      posts[0].date = newDate;
+      posts[0].additional = add;
+  
+      return posts;
+    }
+    // 이미지 하나만 추가, add 존재
+    else if (img.length > 0 && img2.length === 0 && add.length > 0) {
+      add.push(img[0]);
+      posts[0].date = newDate;
+      posts[0].additional = add;
+
+      return posts;
+    }
+    // add만 존재
+    else if (img.length === 0 && img2.length === 0 && add.length > 0) {
+      posts[0].date = newDate;
+      posts[0].additional = add;
+
+      return posts;
+    }
+    // 추가 항목 모두 있음
     else {
       img.push(img2[0]);
       for (let i = 0; i < img.length; i++) {
         add.push(img[i]);
       }
-  
+      posts[0].date = newDate;
       posts[0].additional = add;
-  
+
       return posts;
     }
   } catch (error) {
