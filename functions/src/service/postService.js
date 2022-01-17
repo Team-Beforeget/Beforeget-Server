@@ -57,7 +57,6 @@ const postUploadService = async (req, res) => {
     const { imageUrls } = req;
     const imgTitle = [];
 
-    //TODO: const DATE = dayjs(date).format('YYYY-MM-DD'); 하면 어케 되는진 모르겠는데 하면 클라에 이쁘게 보낼 수 있을거같은 느낌??
     if(!media||!date||!star||!title||!oneline){
         return -2;
     }
@@ -66,7 +65,7 @@ const postUploadService = async (req, res) => {
     try {
       client = await db.connect(req);
       const id = await postDB.addPost(client, req.user.id, media, date, star, title, oneline, comment);
-      console.log(id);
+
       let obj= [{},{}]
       const jsonObj = JSON.parse(additional);
       let idx=0;
@@ -129,11 +128,12 @@ const postUploadService = async (req, res) => {
       if(!result){ return -2;} //존재하지 않는 포스트
   
       const jsonObj = JSON.parse(additional); //추가항목 삭제, 추가 가능
-  
+
       if(jsonObj){ await additionalDB.deleteAdditional(client, postId)}
       for(let i in jsonObj){
         const add_title=i; //추가항목 제목
         const add_content=jsonObj[i]; //추가항목 내용
+        
   
         if(add_title=='imgTitle1' || add_title=='imgTitle2'){ //이미지
           obj[idx].title=add_title;
@@ -280,7 +280,7 @@ const getFilterService = async (req) => {
 
     const userId = req.user.id;
     const posts = await postDB.filterUserPost(client, userId, newDate, now, start, end, mediaIds, starIds);
-    //console.log(posts);
+
     let withoutTimezoneDate;
     for (let i = 0; i < posts.length; i++) {
       withoutTimezoneDate = dayjs(posts[i].date).format('YYYY-MM-DD');
@@ -332,7 +332,7 @@ const getOnePostService = async (req) => {
 
     const posts = await postDB.getPostByUserIdAndPostId(client, userId, postId);
     // 포스트 없음
-    if (!posts) {
+    if (posts.length === 0) {
       return -3;
     }
     const newDate = dayjs(posts[0].date).format('YYYY-MM-DD');
@@ -340,17 +340,21 @@ const getOnePostService = async (req) => {
     const img = await postDB.getFirstImgByPostId(client, postId);
     const img2 = await postDB.getSecondImgByPostId(client, postId);
     const add = await additionalDB.getAdditionalByPostId(client, postId);
+    console.log(img);
+    console.log(img2);
+    console.log(add);
 
     // 추가 항목 없음
     if (img.length === 0 && img2.length === 0 && add.length === 0) {
       posts[0].date = newDate;
+      
       return posts;
     } 
     // 이미지 하나만 추가
-    else if (img.length > 0 && img2.length === 0 && add.length === 0) {
-      add.push(img[0]);
+    else if (img.length > 0 && img2[0].type === null && add.length === 0) {
+      img.push(add[0]);
       posts[0].date = newDate;
-      posts[0].additional = add;
+      posts[0].additional = img;
 
       return posts;
     } 
@@ -366,10 +370,12 @@ const getOnePostService = async (req) => {
       return posts;
     }
     // 이미지 하나만 추가, add 존재
-    else if (img.length > 0 && img2.length === 0 && add.length > 0) {
-      add.push(img[0]);
+    else if (img.length > 0 && img2[0].type === null && add.length > 0) {
+      for (let i = 0; i < add.length; i++) {
+        img.push(add[i]);
+      }
       posts[0].date = newDate;
-      posts[0].additional = add;
+      posts[0].additional = img;
 
       return posts;
     }
@@ -382,12 +388,12 @@ const getOnePostService = async (req) => {
     }
     // 추가 항목 모두 있음
     else {
-      img.push(img2[0]);
-      for (let i = 0; i < img.length; i++) {
-        add.push(img[i]);
+      for (let i = 0; i < add.length; i++) {
+        img.push(add[i]);
       }
+      img.push(img2[0]);
       posts[0].date = newDate;
-      posts[0].additional = add;
+      posts[0].additional = img;
 
       return posts;
     }
