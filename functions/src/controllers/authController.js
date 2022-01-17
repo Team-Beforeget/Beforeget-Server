@@ -171,7 +171,12 @@ const logoutController = async (req, res) => {
     }
     // 로그아웃 실패
     else if (data === -2) {
-      return res.status(statusCode.BAD_REQUEST).send(statusCode.BAD_REQUEST, responseMessage.LOGOUT_FAIL);
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(
+          statusCode.BAD_REQUEST, 
+          responseMessage.LOGOUT_FAIL
+        ));
     } 
     // 로그아웃 성공
     else {
