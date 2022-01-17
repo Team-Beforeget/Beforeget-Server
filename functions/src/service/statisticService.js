@@ -186,11 +186,11 @@ const getSecondStatisticService = async (req) => {
         // 지난 3개월간 기록
         if (parseInt(count) === 3) {
             let mon, largestRecord;
-            month = dayjs(date).subtract(2, 'month').format('MM');
+            month = dayjs(date).subtract(2, 'month').$M+1;
 
             for (let i = 0; i < count; i++) {
                 newDate = dayjs(date).subtract(i, 'month').format('YYYY-MM');
-                newMonth = dayjs(date).subtract(i, 'month').format('MM');
+                newMonth = dayjs(date).subtract(i, 'month').$M+1;
                 let lastday = dayjs(date).subtract(i, 'month').daysInMonth();
                 
                 let record = await postDB.countPostsInDate(client, userId, newDate, lastday);
@@ -262,11 +262,12 @@ const getSecondStatisticService = async (req) => {
         // 5개월간 기록
         else if (parseInt(count) === 5) {
             let mon, largestRecord;
-            month = dayjs(date).subtract(4, 'month').format('MM');
+            month = dayjs(date).subtract(4, 'month').$M+1;
+            console.log(month);
 
             for (let i = 0; i < count; i++) {
                 newDate = dayjs(date).subtract(i, 'month').format('YYYY-MM');
-                newMonth = dayjs(date).subtract(i, 'month').format('MM');
+                newMonth = dayjs(date).subtract(i, 'month').$M+1;
                 let lastday = dayjs(date).subtract(i, 'month').daysInMonth();
                 
                 let record = await postDB.countPostsInDate(client, userId, newDate, lastday);
@@ -359,6 +360,13 @@ const getSecondStatisticService = async (req) => {
 
 
 
+/**
+ *  @통계 나의기록 통계 세번째 
+ *  @route GET /statistic/third/:date
+ *  @access private
+ */
+
+
 
 const getThirdStatisticService = async (req, res) => {
   const media = ["Movie","Book","TV","Music","Webtoon","Youtube"]
@@ -374,13 +382,14 @@ const getThirdStatisticService = async (req, res) => {
       data['start'] = dayjs(start.date).format('YYYY-MM')
 
       const counts = await postDB.getThridStatistic(client,req.user.id, date);
-
+      console.log(counts);
       let mon = `${date}-01`;
-      mon = dayjs(mon).month();
+      mon = dayjs(mon).$M+1;
       
       for(let i of counts){
           let obj = {type:null, count:0};
           let t = media[i['mediaId']-1];
+          console.log(obj, t);
           media.splice((i['mediaId']-1),1);
           obj['type'] = t;
           obj['count'] = parseInt(i['count']);
@@ -441,6 +450,14 @@ const getThirdStatisticService = async (req, res) => {
       client.release();
     }
   };
+
+
+/**
+ *  @통계 나의기록 통계 네번째 
+ *  @route GET /statistic/fourth/:date
+ *  @access private
+ */
+
 
 const getFourthStatisticService = async (req, res) => {
   //한 달 유형별 한줄평 3개씩
@@ -530,6 +547,13 @@ const getFourthStatisticService = async (req, res) => {
       client.release();
     }
   };
+
+
+/**
+ *  @통계 나의기록 통계 전체
+ *  @route GET /statistic/total/:date
+ *  @access private
+ */
   
 
 const getTotalStatisticService = async (req, res) => {
