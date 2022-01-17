@@ -25,7 +25,7 @@ const getAllPostService = async (req) => {
         if (allPost.length === 0) {
             return -2;
         }
-        
+
         let newDate;
         for (let i =0; i < allPost.length; i++) {
           newDate = dayjs(allPost[i].date).format('YYYY-MM-DD');
@@ -281,6 +281,10 @@ const getFilterService = async (req) => {
     const userId = req.user.id;
     const posts = await postDB.filterUserPost(client, userId, newDate, now, start, end, mediaIds, starIds);
 
+    let withoutTimezoneDate = dayjs(posts[0].date).format('YYYY-MM-DD');
+    for (let i = 0; i < posts.length; i++) {
+      posts[i].date = withoutTimezoneDate;
+    }
     // 한줄평 하나만 반환!!!!!!!!!
     const oneline = posts.map(o => o.oneline);
 
@@ -330,7 +334,6 @@ const getOnePostService = async (req) => {
     if (!posts) {
       return -3;
     }
-    console.log(posts[0].date);
     const newDate = dayjs(posts[0].date).format('YYYY-MM-DD');
 
     const img = await postDB.getFirstImgByPostId(client, postId);
