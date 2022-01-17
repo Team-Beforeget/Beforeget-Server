@@ -11,7 +11,7 @@ router.get('/first/:date', getFirstStatisticController);
 router.get('/second/:date/:count', getSecondStatisticController);
 router.get('/third/:date',getThirdStatisticController);
 router.get('/fourth/:date',getFourthStatisticController);
-router.get('/total/:date',getTotalStatisticController);
+router.get('/total/:date/:count',getTotalStatisticController);
 
 
 module.exports = router;

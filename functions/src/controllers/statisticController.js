@@ -192,6 +192,8 @@ const getTotalStatisticController= async (req, res) => {
 
   if(data == -2){
       res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+  }else if(data === -3) {
+    res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, '요청값이 잘못되었습니다.'));
   }else if (data == -5){
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.INTERNAL_SERVER_ERROR));
   }else{

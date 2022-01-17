@@ -114,7 +114,6 @@ const getFirstStatisticService = async (req) => {
 
 const getSecondStatisticService = async (req) => {
     const { date, count } = req.params;
-    console.log(date, count);
     // 요청 파라미터 부족
     if (!date || !count) {
         return -2;
@@ -562,8 +561,9 @@ const getTotalStatisticService = async (req, res) => {
 
     let client;
     let data = { start:"", graphic:"", oneline:[], monthly:[], media:[]};
-    let {date} = req.params;
-    if(!date){ return -2; }
+    let { date, count } = req.params;
+    if(!date || !count) { return -2; }
+    if(count != 5) { return -3;}
 
     try {
       client = await db.connect(req);
@@ -575,6 +575,9 @@ const getTotalStatisticService = async (req, res) => {
       data['media'] = media['arr'];
 
       const { total } = await getFourthStatisticService(req);
+
+      const counts = await getSecondStatisticService(req);
+      data['monthly'] = counts['recordCount'];
 
       let total_count = {};
 
