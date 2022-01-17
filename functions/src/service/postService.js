@@ -280,9 +280,10 @@ const getFilterService = async (req) => {
 
     const userId = req.user.id;
     const posts = await postDB.filterUserPost(client, userId, newDate, now, start, end, mediaIds, starIds);
-
-    let withoutTimezoneDate = dayjs(posts[0].date).format('YYYY-MM-DD');
+    //console.log(posts);
+    let withoutTimezoneDate;
     for (let i = 0; i < posts.length; i++) {
+      withoutTimezoneDate = dayjs(posts[i].date).format('YYYY-MM-DD');
       posts[i].date = withoutTimezoneDate;
     }
     // 한줄평 하나만 반환!!!!!!!!!
