@@ -29,7 +29,7 @@ const getFirstStatisticController = async (req, res) => {
                 ));
         }
         // 요청 파라미터 부족
-        if (data === -2) {
+        else if (data === -2) {
             return res
                 .status(statusCode.BAD_REQUEST)
                 .send(util.fail(
@@ -103,6 +103,15 @@ const getSecondStatisticController = async (req, res) => {
                     '아직 기록이 없습니다.'
                 ));
         }
+        // 3, 5개월 이외의 요청
+        else if (data === -4) {
+            return res
+                .status(statusCode.BAD_REQUEST)
+                .send(util.fail(
+                    statusCode.BAD_REQUEST, 
+                    '잘못된 요청입니다.'
+                ));
+        }
         // 성공
         else {
             res
@@ -125,6 +134,12 @@ const getSecondStatisticController = async (req, res) => {
 
 
 
+/**
+ *  @통계 나의기록 통계 세번째 
+ *  @route GET /statistic/third/:date
+ *  @access private
+ */
+
 
 
 const getThirdStatisticController= async (req, res) => {
@@ -139,7 +154,15 @@ const getThirdStatisticController= async (req, res) => {
       res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.REQUEST_SUCCESS, data));
     }
 
-  };
+};
+
+
+/**
+ *  @통계 나의기록 통계 네번째 
+ *  @route GET /statistic/fourth/:date
+ *  @access private
+ */
+
 
 const getFourthStatisticController= async (req, res) => {
 
@@ -154,6 +177,14 @@ const getFourthStatisticController= async (req, res) => {
   }
 
 };
+
+
+/**
+ *  @통계 나의기록 통계 네번째 
+ *  @route GET /statistic/total/:date
+ *  @access private
+ */
+
 
 const getTotalStatisticController= async (req, res) => {
 

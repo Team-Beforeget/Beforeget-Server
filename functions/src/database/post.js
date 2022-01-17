@@ -882,13 +882,13 @@ const getCreatedAtByUserId = async (client, userId) => {
   
       [userId],
   
-    );
+      );
   
     return convertSnakeToCamel.keysToCamel(rows[0]);
   
   };
 
-// FIXME: 지난 한달의 기록이라 범위 바꿔줘야함
+
 const findPostsByDateAndCountByMedia = async (client, userId, start, end) => {
   const { rows } = await client.query(
     `
@@ -903,17 +903,17 @@ const findPostsByDateAndCountByMedia = async (client, userId, start, end) => {
 
 
 // TODO: group by - having 써서 날짜 범위 기준으로 post개수 세보기
-const countPostsIdInDate = async (client, userId, date, lastDay) => {
-  const { rows } = await client.query(
-    `
-    SELECT created_at, SUM(id) FROM post p
-    WHERE user_id = ${userId}
-      AND created_at BETWEEN '${date}-01' AND '${date}-${lastDay}'
-      GROUP BY created_at
-    `
-  );
-  return convertSnakeToCamel.keysToCamel(rows);
-};
+// const countPostsIdInDate = async (client, userId, date, lastDay) => {
+//   const { rows } = await client.query(
+//     `
+//     SELECT created_at, SUM(id) FROM post p
+//     WHERE user_id = ${userId}
+//       AND created_at BETWEEN '${date}-01' AND '${date}-${lastDay}'
+//       GROUP BY created_at
+//     `
+//   );
+//   return convertSnakeToCamel.keysToCamel(rows);
+// };
 
 
 
@@ -954,7 +954,7 @@ module.exports = {
   // eslint-disable-next-line no-dupe-keys
   getSecondImgByPostId,
   findPostsByDateAndCountByMedia,
-  countPostsIdInDate,
+  //countPostsIdInDate,
   countPostsInDate
 }
 

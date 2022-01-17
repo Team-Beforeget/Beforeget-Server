@@ -31,8 +31,9 @@ const getFirstStatisticService = async (req) => {
         if (media.length === 0) {
           return -3;
         }
-        //console.log((_.sortBy(media, 'count').reverse())[0].mediaId); // 가장 많이 기록한 미디어가 몇번 미디어인지~~~~
-        const isManyMediaId = (_.sortBy(media, 'count').reverse())[0].mediaId; // 미디어 count 후 내림차순 정렬 
+        // TODO 앱잼 이후: post 중에 가장 먼저 기록된 녀석의 날짜 가져오기 
+        // 미디어 count 후 내림차순 정렬 
+        const isManyMediaId = (_.sortBy(media, 'count').reverse())[0].mediaId; 
         // 다양한 경우의 수: 기록한 개수가 같을때 등등~~
         const firstPage = await statisticDB.getFirstStatisticPage(client, isManyMediaId);
         // 페이지 없음
@@ -123,19 +124,18 @@ const getSecondStatisticService = async (req) => {
     try {
         client = await db.connect();
         
-        // X개의 기록을 남겼어요.
         const userId = req.user.id;
         
-        // 기본 선택 달
+        // 기본 선택 달의 기록들 
         const lastDay = dayjs(date).daysInMonth(); // 받아온 날짜의 마지막 날
         const veryLastMonthRecord = await postDB.countPostsInDate(client, userId, date, lastDay);
         console.log(veryLastMonthRecord);
-        // 지지난달
+        // 지지난달의 기록들
         const isDate = dayjs(date).subtract(1, 'month').format('YYYY-MM');
         const lastday = dayjs(date).subtract(1, 'month').daysInMonth();
         const theMonthBeforeLastRecord = await postDB.countPostsInDate(client, userId, isDate, lastday);
         console.log(theMonthBeforeLastRecord);
-        
+        // 기본선택 달 기록 갯수, 지지난달 기록 갯수
         let sumVeryLastMonthRecord = Number();
         let sumTheMonthBeforeLastRecord = Number();
         
@@ -146,12 +146,13 @@ const getSecondStatisticService = async (req) => {
             sumTheMonthBeforeLastRecord += Number(theMonthBeforeLastRecord[i].count);
         }
 
-        // 지난 달보다 Y개 늘었네요/줄었네요! / 지난 달과 같네요
+
         // 지난달 기록 갯수와 지지난달 기록 갯수 비교
         const diff = (a, b) => {
             if (a !== b) {
                 let differ = a - b > 0 ? `늘었네요` : `줄었네요`
                 let absolute = Math.abs(a-b);
+
                 return `${a}개의 기록을 남겼어요.\n지난달보다 ${absolute}개 ${differ}.\n`;
             } else if (a === b) {
                 if (a === 0 && b === 0) {
@@ -164,99 +165,103 @@ const getSecondStatisticService = async (req) => {
         const firstComment = diff(sumVeryLastMonthRecord, sumTheMonthBeforeLastRecord);
         console.log(sumVeryLastMonthRecord);
         console.log(sumTheMonthBeforeLastRecord);
-        // A월로, n개의 기록을 남겼어요!
+
         let month, newMonth, newDate, secondComment;
-        // Z월부터 N개월간 가장 많은 기록을 남긴 달은
-        // 3개월 선택
         // 주먹구구식 코드 => 코드 리뷰 해주세요 제발 ㅠ
+        // 각각 해당 달의 기록 갯수 
         let sumOfRecord1 = Number();
         let sumOfRecord2 = Number();
         let sumOfRecord3 = Number();
         let sumOfRecord4 = Number();
         let sumOfRecord5 = Number();
-        let compareObject1 = new Object();
-        let compareObject2 = new Object();
-        let compareObject3 = new Object();
-        let compareObject4 = new Object();
-        let compareObject5 = new Object();
-        let numCompareArray  = new Array();
-        let compareArray = new Array();
+
+        let countAndMonth1 = new Object();
+        let countAndMonth2 = new Object();
+        let countAndMonth3 = new Object();
+        let countAndMonth4 = new Object();
+        let countAndMonth5 = new Object();
+
+        let eachCountAndMonthArray = new Array(); // 각각 해당 달과 기록 갯수 저장할 배열
+        let findLargestRecordArray  = new Array(); // 가장 많이 기록한 달의 갯수 가져올 배열
+        // 지난 3개월간 기록
         if (parseInt(count) === 3) {
-            let mon, memo;
+            let mon, largestRecord;
             month = dayjs(date).subtract(2, 'month').format('MM');
+
             for (let i = 0; i < count; i++) {
                 newDate = dayjs(date).subtract(i, 'month').format('YYYY-MM');
                 newMonth = dayjs(date).subtract(i, 'month').format('MM');
                 let lastday = dayjs(date).subtract(i, 'month').daysInMonth();
-
+                
                 let record = await postDB.countPostsInDate(client, userId, newDate, lastday);
 
                 if (i === 0) {
                     for (let i = 0; i < record.length; i++) {
                         sumOfRecord1 += Number(record[i].count);
                     }
-                    compareObject1.count = sumOfRecord1;
-                    compareObject1.month = newMonth;
-                    compareArray.push(compareObject1);
-                    numCompareArray.push(sumOfRecord1);
+                    countAndMonth1.count = sumOfRecord1;
+                    countAndMonth1.month = newMonth;
+                    eachCountAndMonthArray.push(countAndMonth1);
+                    findLargestRecordArray.push(sumOfRecord1);
                 } else if (i === 1) {
                     for (let i = 0; i < record.length; i++) {
                         sumOfRecord2 += Number(record[i].count);
                     }
-                    compareObject2.count = sumOfRecord2;
-                    compareObject2.month = newMonth;
-                    compareArray.push(compareObject2);
-                    numCompareArray.push(sumOfRecord2);
+                    countAndMonth2.count = sumOfRecord2;
+                    countAndMonth2.month = newMonth;
+                    eachCountAndMonthArray.push(countAndMonth2);
+                    findLargestRecordArray.push(sumOfRecord2);
                 } else if (i === 2) {
                     for (let i = 0; i < record.length; i++) {
                         sumOfRecord3 += Number(record[i].count);
                     }
-                    compareObject3.count = sumOfRecord3;
-                    compareObject3.month = newMonth;
-                    compareArray.push(compareObject3);
-                    numCompareArray.push(sumOfRecord3);
+                    countAndMonth3.count = sumOfRecord3;
+                    countAndMonth3.month = newMonth;
+                    eachCountAndMonthArray.push(countAndMonth3);
+                    findLargestRecordArray.push(sumOfRecord3);
                 }
             }
-            memo = (numCompareArray.sort((a, b) => b - a))[0];
 
-            // compareArray.forEach(obj => {
-            //     if (obj.count === memo) {
+            largestRecord = (findLargestRecordArray.sort((a, b) => b - a))[0];
+
+            // eachCountAndMonthArray.forEach(obj => {
+            //     if (obj.count === largestRecord) {
             //         mon = obj.month;
             //     }
             // });
-
+            // TODO: 가장 많이 기록한 갯수가 같은 달이 두개 이상일 때
             // let mon1, mon2, mon3;
-            for (let i = 0; i < compareArray.length; i++) {
-                if (compareArray[i].count === memo) {
-                    mon = compareArray[i].month;
-                    // } else if (compareArray[i].count === memo && compareArray[i+1].count === memo) {
-                    //     if (compareArray[i].count === memo) {
-                    //         mon1 = compareArray[i].month;
+            for (let i = 0; i < eachCountAndMonthArray.length; i++) {
+                if (eachCountAndMonthArray[i].count === largestRecord) {
+                    mon = eachCountAndMonthArray[i].month;
+                    // } else if (eachCountAndMonthArray[i].count === largestRecord && eachCountAndMonthArray[i+1].count === largestRecord) {
+                    //     if (eachCountAndMonthArray[i].count === largestRecord) {
+                    //         mon1 = eachCountAndMonthArray[i].month;
                     //     } 
-                    //     if (compareArray[i+1].count === memo) {
-                    //         mon2 = compareArray[i+1].month;
+                    //     if (eachCountAndMonthArray[i+1].count === largestRecord) {
+                    //         mon2 = eachCountAndMonthArray[i+1].month;
                     //     }
-                    //     secondComment = `${month}월 부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon1}, ${mon2}월로, 각각 ${memo}개의 기록을 남겼어요!\n다음달 나의 그래프는 어떤 모양일까요?`;
+                    //     secondComment = `${month}월 부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon1}, ${mon2}월로, 각각 ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프는 어떤 모양일까요?`;
                     // } 
                 }
             }
-            console.log(compareArray);
+            console.log(eachCountAndMonthArray);
 
-            if (numCompareArray[0] === 0 && numCompareArray[1] === 0 && numCompareArray[2] === 0) {
+            if (findLargestRecordArray[0] === 0 && findLargestRecordArray[1] === 0 && findLargestRecordArray[2] === 0) {
                 secondComment = `감상한 미디어를 기록해보세요!`;
             } else {
-                secondComment = `${month}월 부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${memo}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
+                secondComment = `${month}월 부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
             }
             
             const comment = `${firstComment}${secondComment}`;
             const start = date;
-            const recordCount = compareArray;
+            const recordCount = eachCountAndMonthArray;
     
             return { start, recordCount, comment };  
         }
-        // 5개월 선택
+        // 5개월간 기록
         else if (parseInt(count) === 5) {
-            let mon, memo;
+            let mon, largestRecord;
             month = dayjs(date).subtract(4, 'month').format('MM');
 
             for (let i = 0; i < count; i++) {
@@ -270,72 +275,72 @@ const getSecondStatisticService = async (req) => {
                     for (let i = 0; i < record.length; i++) {
                         sumOfRecord1 += Number(record[i].count);
                     }
-                    compareObject1.count = sumOfRecord1;
-                    compareObject1.month = newMonth;
-                    compareArray.push(compareObject1);
-                    numCompareArray.push(sumOfRecord1);
+                    countAndMonth1.count = sumOfRecord1;
+                    countAndMonth1.month = newMonth;
+                    eachCountAndMonthArray.push(countAndMonth1);
+                    findLargestRecordArray.push(sumOfRecord1);
                     
                 } else if (i === 1) {
                     for (let i = 0; i < record.length; i++) {
                         sumOfRecord2 += Number(record[i].count);
                     }
-                    compareObject2.count = sumOfRecord2;
-                    compareObject2.month = newMonth;
-                    compareArray.push(compareObject2);
-                    numCompareArray.push(sumOfRecord2);
+                    countAndMonth2.count = sumOfRecord2;
+                    countAndMonth2.month = newMonth;
+                    eachCountAndMonthArray.push(countAndMonth2);
+                    findLargestRecordArray.push(sumOfRecord2);
                 } else if (i === 2) {
                     for (let i = 0; i < record.length; i++) {
                         sumOfRecord3 += Number(record[i].count);
                     }
-                    compareObject3.count = sumOfRecord3;
-                    compareObject3.month = newMonth;
-                    compareArray.push(compareObject3);
-                    numCompareArray.push(sumOfRecord3);
+                    countAndMonth3.count = sumOfRecord3;
+                    countAndMonth3.month = newMonth;
+                    eachCountAndMonthArray.push(countAndMonth3);
+                    findLargestRecordArray.push(sumOfRecord3);
                 } else if (i === 3) {
                     for (let i = 0; i < record.length; i++) {
                         sumOfRecord4 += Number(record[i].count);
                     }
-                    compareObject4.count = sumOfRecord4;
-                    compareObject4.month = newMonth;
-                    compareArray.push(compareObject4);
-                    numCompareArray.push(sumOfRecord4);
+                    countAndMonth4.count = sumOfRecord4;
+                    countAndMonth4.month = newMonth;
+                    eachCountAndMonthArray.push(countAndMonth4);
+                    findLargestRecordArray.push(sumOfRecord4);
                 } else if (i === 4) {
                     for (let i = 0; i < record.length; i++) {
                         sumOfRecord5 += Number(record[i].count);
                     }
-                    compareObject5.count = sumOfRecord5;
-                    compareObject5.month = newMonth;
-                    compareArray.push(compareObject5);
-                    numCompareArray.push(sumOfRecord5);
+                    countAndMonth5.count = sumOfRecord5;
+                    countAndMonth5.month = newMonth;
+                    eachCountAndMonthArray.push(countAndMonth5);
+                    findLargestRecordArray.push(sumOfRecord5);
                 }
 
             }
-            memo = (numCompareArray.sort((a, b) => b - a))[0];
+            largestRecord = (findLargestRecordArray.sort((a, b) => b - a))[0];
             
 
-            compareArray.forEach(obj => {
-                if (obj.count === memo) {
+            eachCountAndMonthArray.forEach(obj => {
+                if (obj.count === largestRecord) {
                     mon = obj.month;
                 } 
             });
 
-            if (numCompareArray[0] === 0 && numCompareArray[1] === 0 && numCompareArray[2] === 0 && numCompareArray[3] === 0 && numCompareArray[4] === 0) {
+            if (findLargestRecordArray[0] === 0 && findLargestRecordArray[1] === 0 && findLargestRecordArray[2] === 0 && findLargestRecordArray[3] === 0 && findLargestRecordArray[4] === 0) {
                 secondComment = `감상한 미디어를 기록해보세요!`;
             } else {
-                secondComment = `${month}월 부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${memo}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
+                secondComment = `${month}월 부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
             }
 
-            console.log(numCompareArray);
+            console.log(findLargestRecordArray);
             const comment = `${firstComment}${secondComment}`;
             
             const start = date;
-            const recordCount = compareArray;
+            const recordCount = eachCountAndMonthArray;
 
             return { start, recordCount, comment };  
         } 
         // 3, 5 외에는 오류
         else {
-            return -3;
+            return -4;
         }
 
             
