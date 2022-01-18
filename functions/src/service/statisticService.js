@@ -372,7 +372,7 @@ const getThirdStatisticService = async (req, res) => {
   const media = ["Movie","Book","TV","Music","Webtoon","Youtube"]
   const label_media = {"Movie":"영화","Book":"책","TV":"TV","Music":"음악","Webtoon":"웹툰","Youtube":"유튜브"}
     let client;
-    let data = {start:"",arr:[],label:""};
+    let data = {start:"",arr:[],title:"",label:""};
     let {date} = req.params;
     if(!date){ return -2; }
     try {
@@ -432,11 +432,11 @@ const getThirdStatisticService = async (req, res) => {
       }else{ C = c_type+'은' }
 
       if(a_count > b_count && b_count == c_count){
-        label = `${A} 가장 많이 읽었어요.\n${mon}월 한 달간 ${a_count_type}의 ${A} 기록하셨네요!\n다음으로 높은 랭킹을 차지한 ${B} ${C}\n각각 ${c_count}개 기록했어요.`;
+        label = `${mon}월 한 달간 ${a_count_type}의 ${A} 기록하셨네요!\n다음으로 높은 랭킹을 차지한 ${B} ${C}\n각각 ${c_count}개 기록했어요.`;
       }else{
-        label = `${A} 가장 많이 읽었어요.\n${mon}월 한 달간 ${a_count_type}의 ${A} 기록하셨네요!\n다음으로 높은 랭킹을 차지한 ${B} ${C}\n각각 ${b_count}개, ${c_count}개 기록했어요.`;
+        label = `${mon}월 한 달간 ${a_count_type}의 ${A} 기록하셨네요!\n다음으로 높은 랭킹을 차지한 ${B} ${C}\n각각 ${b_count}개, ${c_count}개 기록했어요.`;
       }
-      
+      data['title']=`${A} 가장 많이 읽었어요.`;
       data['label']= label;
 
       return data;

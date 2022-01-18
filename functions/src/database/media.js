@@ -3,12 +3,29 @@ const _ = require('lodash');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
 
-    const getOnelinesByMediaId = async (client, mediaId) => {
+const getGoodOnelinesByMediaId = async (client, mediaId) => {
 
       const { rows } = await client.query(
 
         `
-        SELECT oneline FROM media
+        SELECT good FROM media
+        WHERE id = $1
+        `,
+
+        [mediaId],
+
+      );
+
+      return convertSnakeToCamel.keysToCamel(rows[0]);
+
+    };
+
+ const getBadOnelinesByMediaId = async (client, mediaId) => {
+
+      const { rows } = await client.query(
+
+        `
+        SELECT bad FROM media
         WHERE id = $1
         `,
 
@@ -39,7 +56,6 @@ const getRecommendsByMediaId = async (client, mediaId) => {
   
   };
   
-  
 
 
-module.exports = { getOnelinesByMediaId, getRecommendsByMediaId };
+module.exports = { getGoodOnelinesByMediaId, getBadOnelinesByMediaId, getRecommendsByMediaId};
