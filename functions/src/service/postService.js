@@ -342,71 +342,189 @@ const getOnePostService = async (req) => {
       return -3;
     }
     const newDate = dayjs(posts[0].date).format('YYYY-MM-DD');
+    posts[0].date = newDate;
 
-    const img = await postDB.getFirstImgByPostId(client, postId);
-    const img2 = await postDB.getSecondImgByPostId(client, postId);
-    const add = await additionalDB.getAdditionalByPostId(client, postId);
-    const add2 = await additionalDB.getSelfAdditionalByPostId(client, postId);
+    const defaultAddImg = await postDB.getFirstImgByPostId(client, postId);
+    const userSelfAddImg = await postDB.getSecondImgByPostId(client, postId);
 
-    console.log(img);
-    console.log(img2);
-    console.log(add);
+    const allAdditional = await additionalDB.getAllAdditionalByPostId(client, postId);
+    const defaultAdditional = await additionalDB.getDefaultAdditionalByPostId(client, postId);
+    const userSelfAdditional = await additionalDB.getSelfAdditionalByPostId(client, postId);
 
-
-
-    // 추가 항목 없음
-    if (img.length === 0 && img2.length === 0 && add.length === 0) {
-      posts[0].date = newDate;
-      
-      return posts;
-    } 
-    // 이미지 하나만 추가
-    else if (img.length > 0 && img2[0].type === null && add.length === 0) {
-      img.push(add[0]);
-      posts[0].date = newDate;
-      posts[0].additional = img;
-
-      return posts;
-    } 
-    // 이미지 두개만 추가 && 데이터 가공 for 클라이언트
-    else if (img.length > 0 && img2.length > 0 && add.length === 0) {
-      img.push(img2[0]);
-      for (let i = 0; i < img.length; i++) {
-        add.push(img[i]);
-      }
-      posts[0].date = newDate;
-      posts[0].additional = add;
+    console.log(defaultAddImg);
+    console.log(userSelfAddImg);
   
-      return posts;
-    }
-    // 이미지 하나만 추가, add 존재
-    else if (img.length > 0 && img2[0].type === null && add.length > 0) {
-      for (let i = 0; i < add.length; i++) {
-        img.push(add[i]);
+    console.log(allAdditional);
+    console.log(defaultAdditional);
+    console.log(userSelfAdditional);
+
+
+    // 직접추가 텍스트 있음
+    if (userSelfAdditional.length > 0) {
+      // 기본제공 이미지, 사용자 추가 이미지 존재
+      if (defaultAddImg.length > 0 && userSelfAddImg.length > 0) {
+        for (let i = 0; i < allAdditional.length; i++) {
+          defaultAddImg.push(allAdditional[i]);
+        }
+        defaultAddImg.push(userSelfAddImg[0]);
+        posts[0].additional = defaultAddImg;
+
+        return posts;
       }
-      posts[0].date = newDate;
-      posts[0].additional = img;
-
-      return posts;
-    }
-    // add만 존재
-    else if (img.length === 0 && img2.length === 0 && add.length > 0) {
-      posts[0].date = newDate;
-      posts[0].additional = add;
-
-      return posts;
-    }
-    // 추가 항목 모두 있음
-    else {
-      for (let i = 0; i < add.length; i++) {
-        img.push(add[i]);
+      // 기본제공 이미지, 기본제공 추가 항목, 사용자 추가 항목
+      else if (defaultAddImg.length > 0) {
+        // 
+        if (defaultAdditional.length > 0) {
+          //posts[0].date = newDate;
+          for (let i = 0; i < allAdditional.length; i++) {
+            defaultAddImg.push(allAdditional[i]);
+          }
+          posts[0].additional = defaultAddImg;
+          
+          return posts;
+        } else if (defaultAdditional.length === 0) {
+          //posts[0].date = newDate;
+          for (let i = 0; i < userSelfAdditional.length; i++) {
+            defaultAddImg.push(userSelfAdditional[i]);
+          }
+          posts[0].additional = defaultAddImg;
+          
+          return posts;
+        }
       }
-      img.push(img2[0]);
-      posts[0].date = newDate;
-      posts[0].additional = img;
+      // 기본제공 이미지 없음
+      else if (defaultAddImg.length === 0) {
+        if (userSelfAddImg.length > 0 && defaultAdditional.length > 0) {
+          //posts[0].date = newDate;
+          allAdditional.push(userSelfAddImg[0]);
+          posts[0].additional = allAdditional;
+          
+          return posts;
+        } else if (userSelfAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAdditional.length > 0 ) {
+          userSelfAdditional.push(userSelfAddImg[0]);
+          posts[0].additional = userSelfAdditional;
 
-      return posts;
+          return posts;
+        } else if (userSelfAddImg.length === 0) {
+          for (let i = 0; i < userSelfAdditional.length; i++) {
+            defaultAddImg.push(userSelfAdditional[i]);
+
+          }
+          posts[0].additional = userSelfAdditional;
+
+          return posts;
+        }
+      }
     }
+    // 직접추가 텍스트 없음
+    else if (userSelfAdditional.length === 0) {
+      if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg.length > 0) {
+        for (let i = 0; i < defaultAdditional.length; i++) {
+          defaultAddImg.push(defaultAdditional[i]);
+        }
+        defaultAddImg.push(userSelfAddImg[0]);
+        posts[0].additional = defaultAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg.length === 0) {
+        for (let i = 0; i < defaultAdditional.length; i++) {
+          defaultAddImg.push(defaultAdditional[i]);
+        }
+        posts[0].additional = defaultAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAddImg.length > 0) {
+        defaultAddImg.push(userSelfAddImg[0]);
+        posts.additional = defaultAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAddImg.length === 0) {
+        posts[0].additional = defaultAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg.length === 0) {
+        posts[0].additional = defaultAdditional;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg.length > 0) {
+        posts[0].additional = userSelfAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg.length > 0) {
+        for (let i = 0; i < defaultAdditional.length; i++) {
+          defaultAddImg.push(defaultAdditional[i]);
+        }
+        defaultAddImg.push(userSelfAddImg[0]);
+        posts[0].additional = defaultAddImg;
+
+        return posts;
+      }
+      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg.length === 0) {
+        return posts;
+      }
+    }
+    // // 추가 항목 없음
+    // if (img.length === 0 && img2.length === 0 && add.length === 0) {
+    //   posts[0].date = newDate;
+      
+    //   return posts;
+    // } 
+    // // 기본제공 이미지 추가 없이 add만 존재
+    // else if (img.length === 0 && img2.length === 0 && add.length > 0) {
+    //   posts[0].date = newDate;
+    //   posts[0].additional = add;
+
+    //   return posts;
+    // }
+    // // 이미지 하나만(기본제공) 추가
+    // else if (img.length > 0 && img2[0].type === null) {
+    //   // add 없음
+    //   if (add.length === 0) {
+    //     img.push(add[0]);
+    //     posts[0].date = newDate;
+    //     posts[0].additional = img;
+  
+    //     return posts;
+    //   }
+    //   // add 있음
+    //   else if (add.length > 0) {
+    //     for (let i = 0; i < add.length; i++) {
+    //       img.push(add[i]);
+    //     }
+    //     posts[0].date = newDate;
+    //     posts[0].additional = img;
+  
+    //     return posts;
+    //   }
+    // } 
+    // // 이미지 두개만 추가 && 데이터 가공 for 클라이언트
+    // else if (img.length > 0 && img2.length > 0 && add.length === 0) {
+    //   img.push(img2[0]);
+    //   for (let i = 0; i < img.length; i++) {
+    //     add.push(img[i]);
+    //   }
+    //   posts[0].date = newDate;
+    //   posts[0].additional = add;
+  
+    //   return posts;
+    // }
+    // // 추가 항목 모두 있음
+    // else {
+    //   for (let i = 0; i < add.length; i++) {
+    //     img.push(add[i]);
+    //   }
+    //   img.push(img2[0]);
+    //   posts[0].date = newDate;
+    //   posts[0].additional = img;
+
+    //   return posts;
+    // }
   } catch (error) {
     functions.logger.error(
       `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
