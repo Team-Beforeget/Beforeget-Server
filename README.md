@@ -1,6 +1,16 @@
 # Beforeget-Server
 올해 Saint Nicolas🎅🏻의 선물! 비포겟 서버🚀
-> ### [1차 과제]
+
+> #### 나만의 미디어 감상 아카이빙 서비스 <br>
+> <img width="700" height="600" alt="ERD" src="https://user-images.githubusercontent.com/68634112/149939085-c17e2466-8c51-44d9-8e32-af31f5a681b3.png"/><br>
+> <img width="700" height="600" alt="ERD" src="https://user-images.githubusercontent.com/68634112/149939205-84a689a1-9bf8-4680-83f1-5e9338c23216.png"/><br>
+> ##### 핵심 기능 - 기록한 미디어를 토대로 본인의 미디어 감상 히스토리를 파악해보세요! 
+>
+> - package.json
+> <br> <img width="450" height="600" alt="ERD" src="https://user-images.githubusercontent.com/68634112/149940942-e3365efd-7d5e-4ac3-b030-2601af080c4b.png"/><br>
+
+
+> 
 > - ERD <br>
 > <img width="500" height="550" alt="ERD" src="https://user-images.githubusercontent.com/68634112/148671294-8ec48dbc-373f-464c-b43d-b1e47ade81dc.PNG"><br>
 > - 역할 분담 <br> 
