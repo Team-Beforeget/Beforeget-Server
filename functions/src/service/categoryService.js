@@ -11,10 +11,17 @@ const getOnelinesService = async (req, res) => {
     let client;
     try{
         client = await db.connect();
-        const onelines = await mediaDB.getOnelinesByMediaId(client, id);
+        const good = await mediaDB.getGoodOnelinesByMediaId(client, id);
+        const bad = await mediaDB.getBadOnelinesByMediaId(client, id);
+
+        const onelines = {};
+        onelines['good'] = good['good'];
+        onelines['bad'] = bad['bad'];
+        console.log(onelines)
         return onelines;
 
     } catch (error) {
+        console.log(error)
         return -5;
     } finally {
         client.release();
@@ -31,14 +38,11 @@ const getRecommendsService = async (req, res) => {
     let client;
     try {
         client = await db.connect();
-        const goods = await mediaDB.getGoodRecommendsByMediaId(client, id);
-        const bads = await mediaDB.getBadRecommendsByMediaId(client, id);
-        const recommends = {};
-        recommends['goods'] = goods['additional'];
-        recommends['bads'] = bads['additional'];
+        const recommends = await mediaDB.getRecommendsByMediaId(client, id);
         return recommends;
 
     } catch (error) {
+        console.log(error)
       return -5;
     } finally {
       client.release();
