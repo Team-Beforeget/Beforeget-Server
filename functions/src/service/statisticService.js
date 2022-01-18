@@ -49,7 +49,7 @@ const getFirstStatisticService = async (req) => {
             firstPage[0].start = start;
             firstPage[0].comment = comment;
 
-            return firstPage;
+            return firstPage[0];
         } 
         // 책
         else if (isManyMediaId === 2) {
@@ -57,7 +57,7 @@ const getFirstStatisticService = async (req) => {
             firstPage[0].start = start;
             firstPage[0].comment = comment;
 
-            return firstPage;
+            return firstPage[0];
         }
         // 영화
         else if (isManyMediaId === 3) {
@@ -66,7 +66,7 @@ const getFirstStatisticService = async (req) => {
             firstPage[0].start = start;
             firstPage[0].comment = comment;
 
-            return firstPage;
+            return firstPage[0];
         }
         // 음악
         else if (isManyMediaId === 4) {
@@ -74,7 +74,7 @@ const getFirstStatisticService = async (req) => {
             firstPage[0].start = start;
             firstPage[0].comment = comment;
 
-            return firstPage;
+            return firstPage[0];
         }
         // 웹툰
         else if (isManyMediaId === 5) {
@@ -82,7 +82,7 @@ const getFirstStatisticService = async (req) => {
             firstPage[0].start = start;
             firstPage[0].comment = comment;
 
-            return firstPage;
+            return firstPage[0];
         }
         // 유튜브
         else {
@@ -90,7 +90,7 @@ const getFirstStatisticService = async (req) => {
             firstPage[0].start = start;
             firstPage[0].comment = comment;
 
-            return firstPage;
+            return firstPage[0];
         }
 
     } catch (error) {

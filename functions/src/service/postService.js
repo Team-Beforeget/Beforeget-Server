@@ -57,7 +57,6 @@ const postUploadService = async (req, res) => {
     const { imageUrls } = req;
     const imgTitle = [];
 
-    //TODO: const DATE = dayjs(date).format('YYYY-MM-DD'); 하면 어케 되는진 모르겠는데 하면 클라에 이쁘게 보낼 수 있을거같은 느낌??
     if(!media||!date||!star||!title||!oneline){
         return -2;
     }
@@ -66,8 +65,10 @@ const postUploadService = async (req, res) => {
     try {
       client = await db.connect(req);
       const id = await postDB.addPost(client, req.user.id, media, date, star, title, oneline, comment);
+
       console.log(id);
       const recommends = await mediaDB.getRecommendsByMediaId(client, media); //추천항목
+
 
       let obj= [{},{}]
       console.log(additional)
@@ -135,11 +136,12 @@ const postUploadService = async (req, res) => {
       if(!result){ return -2;} //존재하지 않는 포스트
   
       const jsonObj = JSON.parse(additional); //추가항목 삭제, 추가 가능
-  
+
       if(jsonObj){ await additionalDB.deleteAdditional(client, postId)}
       for(let i in jsonObj){
         const add_title=i; //추가항목 제목
         const add_content=jsonObj[i]; //추가항목 내용
+        
   
         if(add_title=='imgTitle1' || add_title=='imgTitle2'){ //이미지
           obj[idx].title=add_title;
@@ -286,7 +288,7 @@ const getFilterService = async (req) => {
 
     const userId = req.user.id;
     const posts = await postDB.filterUserPost(client, userId, newDate, now, start, end, mediaIds, starIds);
-    //console.log(posts);
+
     let withoutTimezoneDate;
     for (let i = 0; i < posts.length; i++) {
       withoutTimezoneDate = dayjs(posts[i].date).format('YYYY-MM-DD');
@@ -338,65 +340,193 @@ const getOnePostService = async (req) => {
 
     const posts = await postDB.getPostByUserIdAndPostId(client, userId, postId);
     // 포스트 없음
-    if (!posts) {
+    if (posts.length === 0) {
       return -3;
     }
     const newDate = dayjs(posts[0].date).format('YYYY-MM-DD');
+    posts[0].date = newDate;
 
-    const img = await postDB.getFirstImgByPostId(client, postId);
-    const img2 = await postDB.getSecondImgByPostId(client, postId);
-    const add = await additionalDB.getAdditionalByPostId(client, postId);
-    const add2 = await additionalDB.getSelfAdditionalByPostId(client, postId);
-    // 추가 항목 없음
-    if (img.length === 0 && img2.length === 0 && add.length === 0) {
-      posts[0].date = newDate;
-      return posts;
-    } 
-    // 이미지 하나만 추가
-    else if (img.length > 0 && img2.length === 0 && add.length === 0) {
-      add.push(img[0]);
-      posts[0].date = newDate;
-      posts[0].additional = add;
+    const defaultAddImg = await postDB.getFirstImgByPostId(client, postId);
+    const userSelfAddImg = await postDB.getSecondImgByPostId(client, postId);
 
-      return posts;
-    } 
-    // 이미지 두개만 추가 && 데이터 가공 for 클라이언트
-    else if (img.length > 0 && img2.length > 0 && add.length === 0) {
-      img.push(img2[0]);
-      for (let i = 0; i < img.length; i++) {
-        add.push(img[i]);
-      }
-      posts[0].date = newDate;
-      posts[0].additional = add;
+    const allAdditional = await additionalDB.getAllAdditionalByPostId(client, postId);
+    const defaultAdditional = await additionalDB.getDefaultAdditionalByPostId(client, postId);
+    const userSelfAdditional = await additionalDB.getSelfAdditionalByPostId(client, postId);
+
+    console.log(defaultAddImg);
+    console.log(userSelfAddImg);
   
-      return posts;
-    }
-    // 이미지 하나만 추가, add 존재
-    else if (img.length > 0 && img2.length === 0 && add.length > 0) {
-      add.push(img[0]);
-      posts[0].date = newDate;
-      posts[0].additional = add;
+    console.log(allAdditional);
+    console.log(defaultAdditional);
+    console.log(userSelfAdditional);
 
-      return posts;
-    }
-    // add만 존재
-    else if (img.length === 0 && img2.length === 0 && add.length > 0) {
-      posts[0].date = newDate;
-      posts[0].additional = add;
 
-      return posts;
-    }
-    // 추가 항목 모두 있음
-    else {
-      img.push(img2[0]);
-      for (let i = 0; i < img.length; i++) {
-        add.push(img[i]);
+    // 직접추가 텍스트 있음
+    if (userSelfAdditional.length > 0) {
+      // 기본제공 이미지, 사용자 추가 이미지 존재
+      if (defaultAddImg.length > 0 && userSelfAddImg.length > 0) {
+        for (let i = 0; i < allAdditional.length; i++) {
+          defaultAddImg.push(allAdditional[i]);
+        }
+        defaultAddImg.push(userSelfAddImg[0]);
+        posts[0].additional = defaultAddImg;
+
+        return posts;
       }
-      posts[0].date = newDate;
-      posts[0].additional = add;
+      // 기본제공 이미지, 기본제공 추가 항목, 사용자 추가 항목
+      else if (defaultAddImg.length > 0) {
+        // 
+        if (defaultAdditional.length > 0) {
+          //posts[0].date = newDate;
+          for (let i = 0; i < allAdditional.length; i++) {
+            defaultAddImg.push(allAdditional[i]);
+          }
+          posts[0].additional = defaultAddImg;
+          
+          return posts;
+        } else if (defaultAdditional.length === 0) {
+          //posts[0].date = newDate;
+          for (let i = 0; i < userSelfAdditional.length; i++) {
+            defaultAddImg.push(userSelfAdditional[i]);
+          }
+          posts[0].additional = defaultAddImg;
+          
+          return posts;
+        }
+      }
+      // 기본제공 이미지 없음
+      else if (defaultAddImg.length === 0) {
+        if (userSelfAddImg.length > 0 && defaultAdditional.length > 0) {
+          //posts[0].date = newDate;
+          allAdditional.push(userSelfAddImg[0]);
+          posts[0].additional = allAdditional;
+          
+          return posts;
+        } else if (userSelfAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAdditional.length > 0 ) {
+          userSelfAdditional.push(userSelfAddImg[0]);
+          posts[0].additional = userSelfAdditional;
 
-      return posts;
+          return posts;
+        } else if (userSelfAddImg.length === 0) {
+          for (let i = 0; i < userSelfAdditional.length; i++) {
+            defaultAddImg.push(userSelfAdditional[i]);
+
+          }
+          posts[0].additional = userSelfAdditional;
+
+          return posts;
+        }
+      }
     }
+    // 직접추가 텍스트 없음
+    else if (userSelfAdditional.length === 0) {
+      if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg.length > 0) {
+        for (let i = 0; i < defaultAdditional.length; i++) {
+          defaultAddImg.push(defaultAdditional[i]);
+        }
+        defaultAddImg.push(userSelfAddImg[0]);
+        posts[0].additional = defaultAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg.length === 0) {
+        for (let i = 0; i < defaultAdditional.length; i++) {
+          defaultAddImg.push(defaultAdditional[i]);
+        }
+        posts[0].additional = defaultAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAddImg.length > 0) {
+        defaultAddImg.push(userSelfAddImg[0]);
+        posts.additional = defaultAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAddImg.length === 0) {
+        posts[0].additional = defaultAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg.length === 0) {
+        posts[0].additional = defaultAdditional;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg.length > 0) {
+        posts[0].additional = userSelfAddImg;
+
+        return posts;
+      } 
+      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg.length > 0) {
+        for (let i = 0; i < defaultAdditional.length; i++) {
+          defaultAddImg.push(defaultAdditional[i]);
+        }
+        defaultAddImg.push(userSelfAddImg[0]);
+        posts[0].additional = defaultAddImg;
+
+        return posts;
+      }
+      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg.length === 0) {
+        return posts;
+      }
+    }
+    // // 추가 항목 없음
+    // if (img.length === 0 && img2.length === 0 && add.length === 0) {
+    //   posts[0].date = newDate;
+      
+    //   return posts;
+    // } 
+    // // 기본제공 이미지 추가 없이 add만 존재
+    // else if (img.length === 0 && img2.length === 0 && add.length > 0) {
+    //   posts[0].date = newDate;
+    //   posts[0].additional = add;
+
+    //   return posts;
+    // }
+    // // 이미지 하나만(기본제공) 추가
+    // else if (img.length > 0 && img2[0].type === null) {
+    //   // add 없음
+    //   if (add.length === 0) {
+    //     img.push(add[0]);
+    //     posts[0].date = newDate;
+    //     posts[0].additional = img;
+  
+    //     return posts;
+    //   }
+    //   // add 있음
+    //   else if (add.length > 0) {
+    //     for (let i = 0; i < add.length; i++) {
+    //       img.push(add[i]);
+    //     }
+    //     posts[0].date = newDate;
+    //     posts[0].additional = img;
+  
+    //     return posts;
+    //   }
+    // } 
+    // // 이미지 두개만 추가 && 데이터 가공 for 클라이언트
+    // else if (img.length > 0 && img2.length > 0 && add.length === 0) {
+    //   img.push(img2[0]);
+    //   for (let i = 0; i < img.length; i++) {
+    //     add.push(img[i]);
+    //   }
+    //   posts[0].date = newDate;
+    //   posts[0].additional = add;
+  
+    //   return posts;
+    // }
+    // // 추가 항목 모두 있음
+    // else {
+    //   for (let i = 0; i < add.length; i++) {
+    //     img.push(add[i]);
+    //   }
+    //   img.push(img2[0]);
+    //   posts[0].date = newDate;
+    //   posts[0].additional = img;
+
+    //   return posts;
+    // }
   } catch (error) {
     functions.logger.error(
       `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
