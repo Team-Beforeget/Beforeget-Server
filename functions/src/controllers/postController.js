@@ -8,6 +8,7 @@ const {
   getOnePostService,
   postUpdateService,
   postDeleteService } = require("../service/postService");
+const slackAPI = require('../middlewares/slackAPI');
 
 /**
  *  @포스트 전체 조회
@@ -68,6 +69,9 @@ const getAllPostController = async (req, res) => {
 
   if (data == -2){
     res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.POST_REQUIRED_UNFULFILLED));
+    const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${responseMessage.POST_REQUIRED_UNFULFILLED}`;
+   
+    slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
   }else if(data == -5){
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.INTERNAL_SERVER_ERROR));
   }else{
@@ -127,6 +131,9 @@ const postFilterController = async (req, res) => {
     }
     // 필터 결과 해당 포스트 없음
     else if (data === -2) {
+      const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${responseMessage.NO_POST}`;
+   
+      slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
       return res
         .status(statusCode.BAD_REQUEST)
         .send(util.fail(

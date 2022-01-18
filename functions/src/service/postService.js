@@ -71,11 +71,13 @@ const postUploadService = async (req, res) => {
 
 
       let obj= [{},{}]
-      const jsonObj = JSON.parse(additional);
+      console.log(additional)
+      
       let idx=0;
-      for(let i in jsonObj){
-        const add_title=i; //추가항목 제목
-        const add_content=jsonObj[i]; //추가항목 내용
+
+      for(let row of additional){
+        const add_title= row['type']; //추가 항목 제목
+        const add_content= row['content']; //추가항목 내용
         if(add_title=='imgTitle1' || add_title=='imgTitle2'){ //이미지
           obj[idx].title=add_title;
           obj[idx].content=add_content
@@ -97,8 +99,8 @@ const postUploadService = async (req, res) => {
         }
         else if(imgTitle.length ==2 && imageUrls.length ==2){
           await imgDB.postImgs(client, id.id, imgTitle[0].content, imageUrls[0],imgTitle[1].content, imageUrls[1]);
+        }
       }
-    }
       return id;
 
     } catch (error) {

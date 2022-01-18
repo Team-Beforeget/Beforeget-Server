@@ -19,8 +19,8 @@ const getFirstStatisticService = async (req) => {
 
     const lastDate = `${date}-${dayjs(date).daysInMonth()}`;
     const startDate = `${date}-01`;
-    const month = dayjs(date).format('MM');
-
+    let month = dayjs(date).format('MM');
+    if(month.charAt(0)=='0'){ month = month.substr(1,1); }
     let client;
     try {
         client = await db.connect();
@@ -384,7 +384,6 @@ const getThirdStatisticService = async (req, res) => {
       console.log(counts);
       let mon = `${date}-01`;
       mon = dayjs(mon).$M+1;
-      
       for(let i of counts){
           let obj = {type:null, count:0};
           let t = media[i['mediaId']-1];
