@@ -3,8 +3,29 @@ const _ = require('lodash');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
 
-const postAdditional = async (client, postId, title, content) => {
+const postAdditional = async (client, postId, title, content, self) => {
 
+  if(self){
+    const { rows } = await client.query(
+
+      `
+  
+      INSERT INTO additional
+      (post_id, title, content, self)
+  
+      VALUES
+  
+      ($1, $2, $3, true)
+  
+      RETURNING id
+      `,
+  
+      [postId, title, content],
+  
+      );
+      return convertSnakeToCamel.keysToCamel(rows[0]);
+  }
+  else{ 
     const { rows } = await client.query(
 
     `
@@ -22,9 +43,8 @@ const postAdditional = async (client, postId, title, content) => {
     [postId, title, content],
 
     );
-
     return convertSnakeToCamel.keysToCamel(rows[0]);
-
+   }
 };
 
 const getAdditionalByPostId = async (client, postId) => {
