@@ -20,13 +20,13 @@ const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
     };
 
-const getRecommendsByMediaId = async (client, mediaId) => {
+const getGoodRecommendsByMediaId = async (client, mediaId) => {
 
     const { rows } = await client.query(
   
       `
   
-      SELECT recommend as additional FROM media
+      SELECT good as additional FROM media
       WHERE id = $1
   
       `,
@@ -39,7 +39,25 @@ const getRecommendsByMediaId = async (client, mediaId) => {
   
   };
   
+const getBadRecommendsByMediaId = async (client, mediaId) => {
+
+  const { rows } = await client.query(
+
+    `
+
+    SELECT bad as additional FROM media
+    WHERE id = $1
+
+    `,
+
+    [mediaId],
+
+  );
+
+  return convertSnakeToCamel.keysToCamel(rows[0]);
+
+};
   
 
 
-module.exports = { getOnelinesByMediaId, getRecommendsByMediaId };
+module.exports = { getOnelinesByMediaId, getGoodRecommendsByMediaId, getBadRecommendsByMediaId };

@@ -31,7 +31,11 @@ const getRecommendsService = async (req, res) => {
     let client;
     try {
         client = await db.connect();
-        const recommends = await mediaDB.getRecommendsByMediaId(client, id);
+        const goods = await mediaDB.getGoodRecommendsByMediaId(client, id);
+        const bads = await mediaDB.getBadRecommendsByMediaId(client, id);
+        const recommends = {};
+        recommends['goods'] = goods['additional'];
+        recommends['bads'] = bads['additional'];
         return recommends;
 
     } catch (error) {
