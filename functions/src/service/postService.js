@@ -354,7 +354,7 @@ const getOnePostService = async (req) => {
     const defaultAdditional = await additionalDB.getDefaultAdditionalByPostId(client, postId);
     const userSelfAdditional = await additionalDB.getSelfAdditionalByPostId(client, postId);
 
-
+    // FIXME: defaultAddImg, userSelfAddImg 가 [] 일 때 처리 수정 필요
     // 직접추가 텍스트 있음
     if (userSelfAdditional.length > 0) {
       // 기본제공 이미지, 사용자 추가 이미지 존재
@@ -425,7 +425,7 @@ const getOnePostService = async (req) => {
 
 
     // 직접추가 텍스트 없음
-    else if (userSelfAdditional.length === 0) {
+    else if (userSelfAdditional.length === 0) { // 디폴트 이미지가 저장되면 userSelfAddImg[0].type null로 존재
       if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg[0].type != null) {
         for (let i = 0; i < defaultAdditional.length; i++) {
           defaultAddImg.push(defaultAdditional[i]);
@@ -460,11 +460,12 @@ const getOnePostService = async (req) => {
 
         return posts;
       } 
-      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg[0].type != null) {
-        posts[0].additional = userSelfAddImg;
+      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg.length === 0 || userSelfAddImg[0].type != null) {
+        //posts[0].additional = userSelfAddImg;
 
         return posts;
       } 
+      // eslint-disable-next-line no-dupe-else-if
       else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg[0].type != null) {
         for (let i = 0; i < defaultAdditional.length; i++) {
           defaultAddImg.push(defaultAdditional[i]);
