@@ -52,10 +52,23 @@ const getAdditionalByPostId = async (client, postId) => {
         `
         SELECT title as type, content FROM additional
         WHERE post_id = $1
+          AND self = false
         `,
         [postId]
     );
     return convertSnakeToCamel.keysToCamel(rows);
+};
+
+const getSelfAdditionalByPostId = async (client, postId) => {
+  const { rows } = await client.query(
+      `
+      SELECT title as type, content FROM additional
+      WHERE post_id = $1
+        AND self = true
+      `,
+      [postId]
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
 };
 
 const updateAdditional = async (client, postId, title, content) => {
@@ -189,4 +202,4 @@ const updateAdditional = async (client, postId, title, content) => {
   };
 
 
-module.exports = { postAdditional, getAdditionalByPostId, updateAdditional, deleteAdditional };
+module.exports = { postAdditional, getAdditionalByPostId, getSelfAdditionalByPostId, updateAdditional, deleteAdditional };

@@ -346,9 +346,13 @@ const getOnePostService = async (req) => {
     const img = await postDB.getFirstImgByPostId(client, postId);
     const img2 = await postDB.getSecondImgByPostId(client, postId);
     const add = await additionalDB.getAdditionalByPostId(client, postId);
+    const add2 = await additionalDB.getSelfAdditionalByPostId(client, postId);
+
     console.log(img);
     console.log(img2);
     console.log(add);
+
+
 
     // 추가 항목 없음
     if (img.length === 0 && img2.length === 0 && add.length === 0) {
