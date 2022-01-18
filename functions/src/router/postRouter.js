@@ -11,9 +11,9 @@ const {
 
 router.get('/', getAllPostController);
 router.get('/filter',postFilterController);
-router.post('/upload', uploadImage, postUploadController);
+router.post('/upload', postUploadController);
 router.get('/:postId', getOnePostController);
-router.put('/:postId/edit', uploadImage, postUpdateController);
+router.put('/:postId/edit', postUpdateController);
 router.delete('/:postId/delete', postDeleteController);
 
 module.exports = router;
