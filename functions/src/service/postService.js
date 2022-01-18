@@ -53,10 +53,10 @@ const getAllPostService = async (req) => {
 };
 
 const postUploadService = async (req, res) => {
-    const { media, date, star, title, oneline, comment, additional, imgUrl1, imgUrl2 } = req.body;
+    const { media, date, star, title, oneline, comment, additional } = req.body;
     const { imageUrls } = req;
     const imgTitle = [];
-
+    console.log(media,date,star,title,oneline,comment,additional);
     if(!media||!date||!star||!title||!oneline){
         return -2;
     }
@@ -72,7 +72,7 @@ const postUploadService = async (req, res) => {
 
       let obj= [{},{}]
       console.log(additional)
-      
+      console.log(recommends['additional'])
       let idx=0;
 
       for(let row of additional){
@@ -86,6 +86,7 @@ const postUploadService = async (req, res) => {
         }
         else if(add_content && add_content.length>0){ //내용 존재(이미지 제외)
           if(!recommends['additional'].includes(add_title)){ //추천 항목에 없는 내용 ->직접추가 텍스트. self=true
+            console.log("어어어")
             await additionalDB.postAdditional(client, id.id, add_title, add_content, true);
           }
           else await additionalDB.postAdditional(client, id.id, add_title, add_content);
