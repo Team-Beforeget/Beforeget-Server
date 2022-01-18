@@ -152,15 +152,16 @@ const getSecondStatisticService = async (req) => {
                 let differ = a - b > 0 ? `늘었네요` : `줄었네요`
                 let absolute = Math.abs(a-b);
 
-                return `${a}개의 기록을 남겼어요.\n지난달보다 ${absolute}개 ${differ}.\n`;
+                return `지난달보다 ${absolute}개 ${differ}.\n`;
             } else if (a === b) {
                 if (a === 0 && b === 0) {
                     return `최근에 남긴 기록이 없어요.\n`
                 } else {
-                    return `${a}개의 기록을 남겼어요\n지난달과 같네요.`;
+                    return `지난달과 같네요.`;
                 }
             } 
         }
+        const title = `${sumVeryLastMonthRecord}개의 기록을 남겼어요`;
         const firstComment = diff(sumVeryLastMonthRecord, sumTheMonthBeforeLastRecord);
         console.log(sumVeryLastMonthRecord);
         console.log(sumTheMonthBeforeLastRecord);
@@ -256,7 +257,7 @@ const getSecondStatisticService = async (req) => {
             const start = date;
             const recordCount = eachCountAndMonthArray;
     
-            return { start, recordCount, comment };  
+            return { start, recordCount, title, comment };  
         }
         // 5개월간 기록
         else if (parseInt(count) === 5) {
@@ -336,7 +337,7 @@ const getSecondStatisticService = async (req) => {
             const start = date;
             const recordCount = eachCountAndMonthArray;
 
-            return { start, recordCount, comment };  
+            return { start, recordCount, title, comment };  
         } 
         // 3, 5 외에는 오류
         else {

@@ -346,23 +346,29 @@ const getOnePostService = async (req) => {
 
     const defaultAddImg = await postDB.getFirstImgByPostId(client, postId);
     const userSelfAddImg = await postDB.getSecondImgByPostId(client, postId);
-
+    
     const allAdditional = await additionalDB.getAllAdditionalByPostId(client, postId);
     const defaultAdditional = await additionalDB.getDefaultAdditionalByPostId(client, postId);
     const userSelfAdditional = await additionalDB.getSelfAdditionalByPostId(client, postId);
 
-    console.log(defaultAddImg);
-    console.log(userSelfAddImg);
+    console.log('기본이미지 : ', defaultAddImg);
+    console.log('사용자 추가 이미지 : ', userSelfAddImg);
   
-    console.log(allAdditional);
-    console.log(defaultAdditional);
-    console.log(userSelfAdditional);
+    console.log('모두 포함한 추가항목 : ', allAdditional);
+    console.log('기본 추가 항목 : ', defaultAdditional);
+    console.log('사용자 추가 항목 : ', userSelfAdditional);
+
+    console.log('userSelfAdditional.length: ',userSelfAdditional.length);
+    console.log('defaultAddImg.length: ', defaultAddImg.length);
+    console.log('userSelfAddImg[0].type: ', userSelfAddImg[0].type);
+    console.log('defaultAdditional.length: ', defaultAdditional.length);
+
 
 
     // 직접추가 텍스트 있음
     if (userSelfAdditional.length > 0) {
       // 기본제공 이미지, 사용자 추가 이미지 존재
-      if (defaultAddImg.length > 0 && userSelfAddImg.length > 0) {
+      if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg[0].type != null) {
         for (let i = 0; i < allAdditional.length; i++) {
           defaultAddImg.push(allAdditional[i]);
         }
@@ -370,20 +376,23 @@ const getOnePostService = async (req) => {
         posts[0].additional = defaultAddImg;
 
         return posts;
-      }
-      // 기본제공 이미지, 기본제공 추가 항목, 사용자 추가 항목
+      }    
+      // 기본제공 이미지 있음
       else if (defaultAddImg.length > 0) {
         // 
-        if (defaultAdditional.length > 0) {
-          //posts[0].date = newDate;
+        // if () {
+
+        // }
+        // else
+        if (defaultAdditional.length > 0 && userSelfAddImg[0].type === null) {
           for (let i = 0; i < allAdditional.length; i++) {
             defaultAddImg.push(allAdditional[i]);
           }
           posts[0].additional = defaultAddImg;
           
           return posts;
-        } else if (defaultAdditional.length === 0) {
-          //posts[0].date = newDate;
+        } 
+        else if (defaultAdditional.length === 0 && userSelfAddImg[0].type === null) {
           for (let i = 0; i < userSelfAdditional.length; i++) {
             defaultAddImg.push(userSelfAdditional[i]);
           }
@@ -392,33 +401,31 @@ const getOnePostService = async (req) => {
           return posts;
         }
       }
-      // 기본제공 이미지 없음
-      else if (defaultAddImg.length === 0) {
-        if (userSelfAddImg.length > 0 && defaultAdditional.length > 0) {
-          //posts[0].date = newDate;
-          allAdditional.push(userSelfAddImg[0]);
-          posts[0].additional = allAdditional;
+      // // 기본제공 이미지 없음
+      // else if (defaultAddImg[0].type === null) {
+      //   if (userSelfAddImg.length > 0 && defaultAdditional.length > 0) {
+      //     allAdditional.push(userSelfAddImg[0]);
+      //     posts[0].additional = allAdditional;
           
-          return posts;
-        } else if (userSelfAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAdditional.length > 0 ) {
-          userSelfAdditional.push(userSelfAddImg[0]);
-          posts[0].additional = userSelfAdditional;
+      //     return posts;
+      //   } else if (userSelfAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAdditional.length > 0 ) {
+      //     userSelfAdditional.push(userSelfAddImg[0]);
+      //     posts[0].additional = userSelfAdditional;
 
-          return posts;
-        } else if (userSelfAddImg.length === 0) {
-          for (let i = 0; i < userSelfAdditional.length; i++) {
-            defaultAddImg.push(userSelfAdditional[i]);
+      //     return posts;
+      //   } else if (userSelfAddImg.length === 0) {
+      //     posts[0].additional = allAdditional;
 
-          }
-          posts[0].additional = userSelfAdditional;
-
-          return posts;
-        }
-      }
+      //     return posts;
+      //   }
+      // }
     }
+
+
+
     // 직접추가 텍스트 없음
     else if (userSelfAdditional.length === 0) {
-      if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg.length > 0) {
+      if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg[0].type != null) {
         for (let i = 0; i < defaultAdditional.length; i++) {
           defaultAddImg.push(defaultAdditional[i]);
         }
@@ -427,7 +434,8 @@ const getOnePostService = async (req) => {
 
         return posts;
       } 
-      else if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg.length === 0) {
+      // eslint-disable-next-line no-dupe-else-if
+      else if (defaultAddImg.length > 0 && defaultAdditional.length > 0 && userSelfAddImg[0].type === null) {
         for (let i = 0; i < defaultAdditional.length; i++) {
           defaultAddImg.push(defaultAdditional[i]);
         }
@@ -435,28 +443,28 @@ const getOnePostService = async (req) => {
 
         return posts;
       } 
-      else if (defaultAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAddImg.length > 0) {
+      else if (defaultAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAddImg[0].type != null) {
         defaultAddImg.push(userSelfAddImg[0]);
         posts.additional = defaultAddImg;
 
         return posts;
       } 
-      else if (defaultAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAddImg.length === 0) {
+      else if (defaultAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAddImg[0].type === null) {
         posts[0].additional = defaultAddImg;
 
         return posts;
       } 
-      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg.length === 0) {
+      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg[0].type === null) {
         posts[0].additional = defaultAdditional;
 
         return posts;
       } 
-      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg.length > 0) {
+      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg[0].type != null) {
         posts[0].additional = userSelfAddImg;
 
         return posts;
       } 
-      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg.length > 0) {
+      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg[0].type != null) {
         for (let i = 0; i < defaultAdditional.length; i++) {
           defaultAddImg.push(defaultAdditional[i]);
         }
@@ -465,7 +473,7 @@ const getOnePostService = async (req) => {
 
         return posts;
       }
-      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg.length === 0) {
+      else if (defaultAddImg.length === 0 && defaultAdditional.length === 0 && userSelfAddImg[0].type === null) {
         return posts;
       }
     }
