@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const db = require('../database/db');
-const { postDB, additionalDB, imgDB } = require('../database');
+const { mediaDB, postDB, additionalDB, imgDB } = require('../database');
 const dayjs = require('dayjs');
 const _ = require('lodash');
 
@@ -67,6 +67,8 @@ const postUploadService = async (req, res) => {
       client = await db.connect(req);
       const id = await postDB.addPost(client, req.user.id, media, date, star, title, oneline, comment);
       console.log(id);
+      const recommends = await mediaDB.getRecommendsByMediaId(client, media); //추천항목
+
       let obj= [{},{}]
       const jsonObj = JSON.parse(additional);
       let idx=0;
@@ -79,8 +81,11 @@ const postUploadService = async (req, res) => {
           imgTitle.push(obj[idx]);
           idx++;
         }
-        else if(add_content && add_content.length>0){//내용 존재(이미지 제외)
-          await additionalDB.postAdditional(client, id.id, add_title, add_content);
+        else if(add_content && add_content.length>0){ //내용 존재(이미지 제외)
+          if(!recommends['additional'].includes(add_title)){ //추천 항목에 없는 내용 ->직접추가 텍스트. self=true
+            await additionalDB.postAdditional(client, id.id, add_title, add_content, true);
+          }
+          else await additionalDB.postAdditional(client, id.id, add_title, add_content);
         }
       }
 
@@ -93,7 +98,6 @@ const postUploadService = async (req, res) => {
           await imgDB.postImgs(client, id.id, imgTitle[0].content, imageUrls[0],imgTitle[1].content, imageUrls[1]);
       }
     }
-
       return id;
 
     } catch (error) {
