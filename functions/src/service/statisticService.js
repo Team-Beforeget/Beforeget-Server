@@ -161,7 +161,11 @@ const getSecondStatisticService = async (req) => {
                 }
             } 
         }
+<<<<<<< HEAD
         const title = `${sumVeryLastMonthRecord}개의 기록을 남겼어요`
+=======
+        const title = `${sumVeryLastMonthRecord}개의 기록을 남겼어요`;
+>>>>>>> 5c61b02c6cbc9c4d80e9aec09852158ee381b833
         const firstComment = diff(sumVeryLastMonthRecord, sumTheMonthBeforeLastRecord);
         console.log(sumVeryLastMonthRecord);
         console.log(sumTheMonthBeforeLastRecord);
