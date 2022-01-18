@@ -161,10 +161,10 @@ const getSecondStatisticService = async (req) => {
                 }
             } 
         }
-        const title = `${sumVeryLastMonthRecord}개의 기록을 남겼어요`;
+
+        const title = `${sumVeryLastMonthRecord}개의 기록을 남겼어요`
         const firstComment = diff(sumVeryLastMonthRecord, sumTheMonthBeforeLastRecord);
-        console.log(sumVeryLastMonthRecord);
-        console.log(sumTheMonthBeforeLastRecord);
+
 
         let month, newMonth, newDate, secondComment;
         // 주먹구구식 코드 => 코드 리뷰 해주세요 제발 ㅠ
