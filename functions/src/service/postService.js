@@ -351,19 +351,6 @@ const getOnePostService = async (req) => {
     const defaultAdditional = await additionalDB.getDefaultAdditionalByPostId(client, postId);
     const userSelfAdditional = await additionalDB.getSelfAdditionalByPostId(client, postId);
 
-    console.log('기본이미지 : ', defaultAddImg);
-    console.log('사용자 추가 이미지 : ', userSelfAddImg);
-  
-    console.log('모두 포함한 추가항목 : ', allAdditional);
-    console.log('기본 추가 항목 : ', defaultAdditional);
-    console.log('사용자 추가 항목 : ', userSelfAdditional);
-
-    console.log('userSelfAdditional.length: ',userSelfAdditional.length);
-    console.log('defaultAddImg.length: ', defaultAddImg.length);
-    console.log('userSelfAddImg[0].type: ', userSelfAddImg[0].type);
-    console.log('defaultAdditional.length: ', defaultAdditional.length);
-
-
 
     // 직접추가 텍스트 있음
     if (userSelfAdditional.length > 0) {
@@ -380,11 +367,16 @@ const getOnePostService = async (req) => {
       // 기본제공 이미지 있음
       else if (defaultAddImg.length > 0) {
         // 
-        // if () {
+        if (defaultAdditional.length === 0 && userSelfAddImg[0].type != null) {
+          for (let i = 0; i < userSelfAdditional.length; i++) {
+            defaultAddImg.push(userSelfAdditional[i]);
+          }
+          defaultAddImg.push(userSelfAddImg[0]);
+          posts[0].additional = defaultAddImg;
 
-        // }
-        // else
-        if (defaultAdditional.length > 0 && userSelfAddImg[0].type === null) {
+          return posts;
+        }
+        else if (defaultAdditional.length > 0 && userSelfAddImg[0].type === null) {
           for (let i = 0; i < allAdditional.length; i++) {
             defaultAddImg.push(allAdditional[i]);
           }
@@ -401,26 +393,32 @@ const getOnePostService = async (req) => {
           return posts;
         }
       }
-      // // 기본제공 이미지 없음
-      // else if (defaultAddImg[0].type === null) {
-      //   if (userSelfAddImg.length > 0 && defaultAdditional.length > 0) {
-      //     allAdditional.push(userSelfAddImg[0]);
-      //     posts[0].additional = allAdditional;
+      // 기본제공 이미지 없음
+      else if (defaultAddImg[0].type === null) {
+        if (userSelfAddImg[0].type != null && defaultAdditional.length > 0) {
+          allAdditional.push(userSelfAddImg[0]);
+          posts[0].additional = allAdditional;
           
-      //     return posts;
-      //   } else if (userSelfAddImg.length > 0 && defaultAdditional.length === 0 && userSelfAdditional.length > 0 ) {
-      //     userSelfAdditional.push(userSelfAddImg[0]);
-      //     posts[0].additional = userSelfAdditional;
+          return posts;
+        } 
+        else if (userSelfAddImg[0].type != null && defaultAdditional.length === 0) {
+          userSelfAdditional.push(userSelfAddImg[0]);
+          posts[0].additional = userSelfAdditional;
 
-      //     return posts;
-      //   } else if (userSelfAddImg.length === 0) {
-      //     posts[0].additional = allAdditional;
+          return posts;
+        } 
+        else if (userSelfAddImg[0].type === null && defaultAdditional.length > 0) {
+          posts[0].additional = allAdditional;
 
-      //     return posts;
-      //   }
-      // }
+          return posts;
+        }
+        else if (userSelfAddImg[0].type === null && defaultAdditional.length === 0) {
+          posts[0].additional = userSelfAdditional;
+
+          return posts;
+        }
+      }
     }
-
 
 
     // 직접추가 텍스트 없음
@@ -477,62 +475,6 @@ const getOnePostService = async (req) => {
         return posts;
       }
     }
-    // // 추가 항목 없음
-    // if (img.length === 0 && img2.length === 0 && add.length === 0) {
-    //   posts[0].date = newDate;
-      
-    //   return posts;
-    // } 
-    // // 기본제공 이미지 추가 없이 add만 존재
-    // else if (img.length === 0 && img2.length === 0 && add.length > 0) {
-    //   posts[0].date = newDate;
-    //   posts[0].additional = add;
-
-    //   return posts;
-    // }
-    // // 이미지 하나만(기본제공) 추가
-    // else if (img.length > 0 && img2[0].type === null) {
-    //   // add 없음
-    //   if (add.length === 0) {
-    //     img.push(add[0]);
-    //     posts[0].date = newDate;
-    //     posts[0].additional = img;
-  
-    //     return posts;
-    //   }
-    //   // add 있음
-    //   else if (add.length > 0) {
-    //     for (let i = 0; i < add.length; i++) {
-    //       img.push(add[i]);
-    //     }
-    //     posts[0].date = newDate;
-    //     posts[0].additional = img;
-  
-    //     return posts;
-    //   }
-    // } 
-    // // 이미지 두개만 추가 && 데이터 가공 for 클라이언트
-    // else if (img.length > 0 && img2.length > 0 && add.length === 0) {
-    //   img.push(img2[0]);
-    //   for (let i = 0; i < img.length; i++) {
-    //     add.push(img[i]);
-    //   }
-    //   posts[0].date = newDate;
-    //   posts[0].additional = add;
-  
-    //   return posts;
-    // }
-    // // 추가 항목 모두 있음
-    // else {
-    //   for (let i = 0; i < add.length; i++) {
-    //     img.push(add[i]);
-    //   }
-    //   img.push(img2[0]);
-    //   posts[0].date = newDate;
-    //   posts[0].additional = img;
-
-    //   return posts;
-    // }
   } catch (error) {
     functions.logger.error(
       `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
