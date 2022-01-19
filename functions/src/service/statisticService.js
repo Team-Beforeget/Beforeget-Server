@@ -43,7 +43,8 @@ const getFirstStatisticService = async (req) => {
         }
         // 가장 많은 기록을 남긴 미디어에 대한 분기
         let comment;
-        const start = date;
+        let start = await postDB.getCreatedAtByUserId(client, req.user.id);
+        start = dayjs(start.date).format('YYYY-MM')
         // 영화
         if (isManyMediaId === 1) {
             comment = `최신 개봉작부터 고전 영화까지 마스터!\n${month}월 영화 기록이 가장 많은 당신에게\n하루는 1440분이 아닌 1440프레임이죠!\n다음 달, 나는 어떤 유형일까요?`;
@@ -257,7 +258,8 @@ const getSecondStatisticService = async (req) => {
             }
             
             const comment = `${firstComment}${secondComment}`;
-            const start = date;
+            let start = await postDB.getCreatedAtByUserId(client, req.user.id);
+            start = dayjs(start.date).format('YYYY-MM')
             const recordCount = eachCountAndMonthArray;
     
             return { start, recordCount, title, comment };  
@@ -337,7 +339,8 @@ const getSecondStatisticService = async (req) => {
             console.log(findLargestRecordArray);
             const comment = `${firstComment}${secondComment}`;
             
-            const start = date;
+            let start = await postDB.getCreatedAtByUserId(client, req.user.id);
+            start = dayjs(start.date).format('YYYY-MM')
             const recordCount = eachCountAndMonthArray;
 
             return { start, recordCount, title, comment };  
