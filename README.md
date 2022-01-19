@@ -12,8 +12,8 @@
 
 > 
 > - ERD <br>
->
-> <img width="500" height="550" alt="ERD" src="https://user-images.githubusercontent.com/68634112/148972847-92a3437c-8b20-42d6-a1e1-062bf99abdc3.png"><br>
+
+> <img width="500" height="600" alt="ERD" src="https://user-images.githubusercontent.com/68634112/150094869-90946276-e9d4-4423-ab84-3a529bcca94b.png"><br>
 > - 역할 분담 <br> 
 > <table>
 >    <thead>
