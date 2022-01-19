@@ -579,6 +579,9 @@ const getTotalStatisticService = async (req, res) => {
       
       const start = await postDB.getCreatedAtByUserId(client, req.user.id);
       data['start'] = dayjs(start.date).format('YYYY-MM')
+
+      const graphic = await getFirstStatisticService(req);
+      data['graphic'] = graphic.poster;
   
       const media = await getThirdStatisticService(req);
       data['media'] = media['arr'];
