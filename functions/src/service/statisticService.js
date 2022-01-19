@@ -41,11 +41,12 @@ const getFirstStatisticService = async (req) => {
         if (!firstPage) {
             return -3;
         }
-        // 가장 많은 기록을 남긴 미디어에 대한 분기
-        let comment;
-        let start = await postDB.getCreatedAtByUserId(client, req.user.id);
+        // 사용자가 기록한 포스트 중 
+        let start = await postDB.getCreatedAtByUserId(client, userId);
         start = dayjs(start.date).format('YYYY-MM')
+        // 가장 많은 기록을 남긴 미디어에 대한 분기
         // 영화
+        let comment;
         if (isManyMediaId === 1) {
             comment = `최신 개봉작부터 고전 영화까지 마스터!\n${month}월 영화 기록이 가장 많은 당신에게\n하루는 1440분이 아닌 1440프레임이죠!\n다음 달, 나는 어떤 유형일까요?`;
             firstPage[0].start = start;
@@ -63,7 +64,6 @@ const getFirstStatisticService = async (req) => {
         }
         // 영화
         else if (isManyMediaId === 3) {
-            console.log('========');
             comment = `방구석 1열 열정적인 리모컨트롤러!\n${month}월 TV 기록이 가장 많은 당신,\n정주행과 본방사수는 놓칠 수 없어요!\n다음 달, 나는 어떤 유형일까요?`;
             firstPage[0].start = start;
             firstPage[0].comment = comment;
@@ -254,7 +254,7 @@ const getSecondStatisticService = async (req) => {
             if (findLargestRecordArray[0] === 0 && findLargestRecordArray[1] === 0 && findLargestRecordArray[2] === 0) {
                 secondComment = `감상한 미디어를 기록해보세요!`;
             } else {
-                secondComment = `${month}월 부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
+                secondComment = `${month}월부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
             }
             
             const comment = `${firstComment}${secondComment}`;
@@ -333,7 +333,7 @@ const getSecondStatisticService = async (req) => {
             if (findLargestRecordArray[0] === 0 && findLargestRecordArray[1] === 0 && findLargestRecordArray[2] === 0 && findLargestRecordArray[3] === 0 && findLargestRecordArray[4] === 0) {
                 secondComment = `감상한 미디어를 기록해보세요!`;
             } else {
-                secondComment = `${month}월 부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
+                secondComment = `${month}월부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
             }
 
             console.log(findLargestRecordArray);
@@ -589,10 +589,11 @@ const getTotalStatisticService = async (req, res) => {
       const media = await getThirdStatisticService(req);
       data['media'] = media['arr'];
 
-      const { total } = await getFourthStatisticService(req);
-
       const counts = await getSecondStatisticService(req);
       data['monthly'] = counts['recordCount'];
+      
+      const { total } = await getFourthStatisticService(req);
+
 
       let total_count = {};
 
