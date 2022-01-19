@@ -1,5 +1,6 @@
 const db = require('../database/db');
 const { postDB } = require('../database');
+const slackAPI = require('../middlewares/slackAPI');
 
 const media = ["Movie","Book","TV","Music","Webtoon","Youtube"]
 const getHomeService = async (req, res) => {
@@ -14,6 +15,9 @@ const getHomeService = async (req, res) => {
       return data;
 
     } catch (error) {
+      const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+      slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
         return -5;
 
     } finally {

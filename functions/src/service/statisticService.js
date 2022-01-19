@@ -3,6 +3,7 @@ const db = require('../database/db');
 const _ = require('lodash');
 const dayjs = require('dayjs');
 const { statisticDB, postDB } = require('../database');
+const slackAPI = require('../middlewares/slackAPI');
 
 /**
  *  @통계 나의기록 통계
@@ -98,7 +99,9 @@ const getFirstStatisticService = async (req) => {
             `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
             `[CONTENT] ${error}`
           );
-          console.log(error);
+          const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+          slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
           // DB 에러
           return -1;
     } finally {
@@ -350,7 +353,9 @@ const getSecondStatisticService = async (req) => {
             `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
             `[CONTENT] ${error}`
         );
-        console.log(error);
+        const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+        slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
       // DB 에러
       return -1;
     } finally {
@@ -442,7 +447,9 @@ const getThirdStatisticService = async (req, res) => {
       return data;
 
     } catch (error) {
-        console.log(error)
+      const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+      slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
         return -5;
 
     } finally {
@@ -539,7 +546,9 @@ const getFourthStatisticService = async (req, res) => {
       return {data, total};
 
     } catch (error) {
-        console.log(error)
+      const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+      slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
         return -5;
 
     } finally {
@@ -616,7 +625,9 @@ const getTotalStatisticService = async (req, res) => {
       return data;
 
     } catch (error) {
-        console.log(error)
+      const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+      slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
         return -5;
 
     } finally {

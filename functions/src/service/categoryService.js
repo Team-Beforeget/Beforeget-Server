@@ -1,5 +1,6 @@
 const db = require('../database/db');
 const { mediaDB } = require('../database');
+const slackAPI = require('../middlewares/slackAPI');
 
 const getOnelinesService = async (req, res) => {
     const { id } = req.params;
@@ -21,7 +22,9 @@ const getOnelinesService = async (req, res) => {
         return onelines;
 
     } catch (error) {
-        console.log(error)
+        const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+        slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
         return -5;
     } finally {
         client.release();
@@ -42,7 +45,9 @@ const getRecommendsService = async (req, res) => {
         return recommends;
 
     } catch (error) {
-        console.log(error)
+        const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+        slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
       return -5;
     } finally {
       client.release();

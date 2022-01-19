@@ -6,6 +6,7 @@ const { signInWithEmailAndPassword } = require('@firebase/auth');
 const jwtHandlers = require("../lib/jwtHandlers");
 const { emailValidator } = require("../lib/validator");
 const { firebaseAuth } = require("../config/firebaseClient");
+const slackAPI = require('../middlewares/slackAPI');
 
 /**
  *  @회원가입
@@ -62,6 +63,9 @@ const joinService = async (req) => {
             `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
             `[CONTENT] ${error}`
         );
+        const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+        slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
         console.log(error);
         // DB 에러
         return -1;

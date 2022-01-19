@@ -3,7 +3,7 @@ const db = require('../database/db');
 const { mediaDB, postDB, additionalDB, imgDB } = require('../database');
 const dayjs = require('dayjs');
 const _ = require('lodash');
-
+const slackAPI = require('../middlewares/slackAPI');
 
 /**
  *  @포스트 전체 조회
@@ -44,7 +44,9 @@ const getAllPostService = async (req) => {
             `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
             `[CONTENT] ${error}`
           );
-          console.log(error);
+          const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+          slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
           // DB 에러
           return -1;
     } finally {
@@ -105,7 +107,9 @@ const postUploadService = async (req, res) => {
       return id;
 
     } catch (error) {
-        console.log(error)
+      const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+      slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
         return -5;
 
     } finally {
@@ -185,7 +189,9 @@ const postUploadService = async (req, res) => {
       return result;
   
     } catch (error) {
-        console.log(error)
+      const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+      slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
         return -5;
   
     } finally {
@@ -209,7 +215,9 @@ const postUploadService = async (req, res) => {
       return id;
   
     } catch (error) {
-        console.log(error)
+      const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+      slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
         return -5;
   
     } finally {
@@ -312,7 +320,9 @@ const getFilterService = async (req) => {
       `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
       `[CONTENT] ${error}`
     );
-    console.log(error);
+    const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+    slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
     // DB 에러
     return -1;
   } finally {
@@ -484,7 +494,9 @@ const getOnePostService = async (req) => {
       `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`,
       `[CONTENT] ${error}`
     );
-    console.log(error);
+    const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${error}`;
+   
+    slackAPI.sendMessageToSlack(slackMessage, slackAPI.DEV_WEB_HOOK_ERROR_MONITORING);
     // DB 에러
     return -1;
   } finally {
