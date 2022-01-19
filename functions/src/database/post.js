@@ -60,6 +60,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
           FROM post p
           WHERE user_id = ${userId}
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -72,6 +73,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND star IN (${starIds})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -84,6 +86,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND star IN (${starIds.join()})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -99,6 +102,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -112,6 +116,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds})
           AND star IN (${starIds})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -125,6 +130,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds})
           AND star IN (${starIds.join()})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -140,6 +146,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds.join()})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -153,6 +160,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds.join()})
           AND star IN (${starIds})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -166,6 +174,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds.join()})
           AND star IN (${starIds.join()})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -180,6 +189,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           SELECT id, user_id, media_id as category, created_at as date, star, title, oneline
           FROM post p
           WHERE user_id = ${userId}
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -192,6 +202,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND star IN (${starIds})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -204,6 +215,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND star IN (${starIds.join()})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -219,6 +231,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -232,6 +245,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds})
           AND star IN (${starIds})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -245,6 +259,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds})
           AND star IN (${starIds.join()})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -260,6 +275,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds.join()})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -273,6 +289,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds.join()})
           AND star IN (${starIds})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -286,6 +303,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds.join()})
           AND star IN (${starIds.join()})
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -305,6 +323,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND created_at BETWEEN '${date}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -318,6 +337,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND star IN (${starIds})
           AND created_at BETWEEN '${date}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -331,6 +351,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND star IN (${starIds.join()})
           AND created_at BETWEEN '${date}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -347,6 +368,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds})
           AND created_at BETWEEN '${date}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -361,6 +383,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           AND media_id IN (${mediaIds})
           AND star IN (${starIds})
           AND created_at BETWEEN '${date}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -375,6 +398,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           AND media_id IN (${mediaIds})
           AND star IN (${starIds.join()})
           AND created_at BETWEEN '${date}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -391,6 +415,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds.join()})
           AND created_at BETWEEN '${date}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -405,6 +430,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           AND media_id IN (${mediaIds.join()})
           AND star IN (${starIds})
           AND created_at BETWEEN '${date}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -419,6 +445,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           AND media_id IN (${mediaIds.join()})
           AND star IN (${starIds.join()})
           AND created_at BETWEEN '${date}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -438,6 +465,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           FROM post p
           WHERE user_id = ${userId}
           AND created_at BETWEEN '${start}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -451,6 +479,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND star IN (${starIds})
           AND created_at BETWEEN '${start}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -464,6 +493,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND star IN (${starIds.join()})
           AND created_at BETWEEN '${start}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -508,6 +538,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           AND media_id IN (${mediaIds})
           AND star IN (${starIds.join()})
           AND created_at BETWEEN '${start}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -524,6 +555,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           WHERE user_id = ${userId}
           AND media_id IN (${mediaIds.join()})
           AND created_at BETWEEN '${start}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -538,6 +570,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           AND media_id IN (${mediaIds.join()})
           AND star IN (${starIds})
           AND created_at BETWEEN '${start}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
@@ -552,6 +585,7 @@ const filterUserPost = async (client, userId, date, today, start, end, mediaIds,
           AND media_id IN (${mediaIds.join()})
           AND star IN (${starIds.join()})
           AND created_at BETWEEN '${start}' AND '${today}'
+          ORDER BY created_at DESC
           `
           );
           return convertSnakeToCamel.keysToCamel(rows);
