@@ -364,6 +364,12 @@ const getOnePostService = async (req) => {
     const defaultAdditional = await additionalDB.getDefaultAdditionalByPostId(client, postId);
     const userSelfAdditional = await additionalDB.getSelfAdditionalByPostId(client, postId);
 
+    console.log(defaultAddImg);
+    console.log(userSelfAddImg);
+    console.log(allAdditional);
+    console.log(defaultAdditional);
+    console.log(userSelfAdditional);
+
     // FIXME: defaultAddImg, userSelfAddImg 가 [] 일 때 처리 수정 필요
     // 직접추가 텍스트 있음
     if (userSelfAdditional.length > 0) {
@@ -465,7 +471,7 @@ const getOnePostService = async (req) => {
 
         return posts;
       } 
-      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg[0].type === null) {
+      else if (defaultAddImg.length === 0 && defaultAdditional.length > 0 && userSelfAddImg.length === 0) {
         posts[0].additional = defaultAdditional;
 
         return posts;
