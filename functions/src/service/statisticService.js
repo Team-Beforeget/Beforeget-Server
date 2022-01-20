@@ -29,12 +29,13 @@ const getFirstStatisticService = async (req) => {
         const userId = req.user.id;
         
         const media = await postDB.findPostsByDateAndCountByMedia(client, userId, startDate, lastDate);
+        
         if (media.length === 0) {
           return -3;
         }
         // TODO 앱잼 이후: post 중에 가장 먼저 기록된 녀석의 날짜 가져오기 
         // 미디어 count 후 내림차순 정렬 
-        const isManyMediaId = (_.sortBy(media, 'count').reverse())[0].mediaId; 
+        const isManyMediaId = (_.sortBy(media, 'count').sort((a, b) => b.count - a.count))[0].mediaId; 
         // 다양한 경우의 수: 기록한 개수가 같을때 등등~~
         const firstPage = await statisticDB.getFirstStatisticPage(client, isManyMediaId);
         // 페이지 없음
@@ -492,9 +493,9 @@ const getFourthStatisticService = async (req, res) => {
       data['start'] = dayjs(start.date).format('YYYY-MM')
 
       const posts = await postDB.getFourthStatistic(client,req.user.id, date);
-
+      console.log(posts);
       const oneline = {"Movie":[], "Book":[], "TV":[], "Music":[], "Webtoon":[], "Youtube":[] }
-
+      console.log(oneline);
   
       _.forEach(posts, (row, key)=>{
 
