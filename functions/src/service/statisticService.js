@@ -454,7 +454,7 @@ const getThirdStatisticService = async (req, res) => {
       }else{
         label = `${mon}월 한 달간 ${a_count_type}의 ${A} 기록하셨네요!\n다음으로 높은 랭킹을 차지한 ${B} ${C}\n각각 ${b_count}개, ${c_count}개 기록했어요.`;
       }
-      data['title']=`${A} 가장 많이 ${read}.`;
+      data['title']=`${A} 가장 많이 ${read}`;
       data['label']= label;
 
       return data;
