@@ -34,6 +34,7 @@ const getFirstStatisticService = async (req) => {
           return -3;
         }
         // TODO 앱잼 이후: post 중에 가장 먼저 기록된 녀석의 날짜 가져오기 
+        console.log(_.sortBy(media, 'count').sort((a, b) => b.count - a.count));
         // 미디어 count 후 내림차순 정렬 
         const isManyMediaId = (_.sortBy(media, 'count').sort((a, b) => b.count - a.count))[0].mediaId; 
         // 다양한 경우의 수: 기록한 개수가 같을때 등등~~
@@ -255,7 +256,7 @@ const getSecondStatisticService = async (req) => {
             if (findLargestRecordArray[0] === 0 && findLargestRecordArray[1] === 0 && findLargestRecordArray[2] === 0) {
                 secondComment = `감상한 미디어를 기록해보세요!`;
             } else {
-                secondComment = `${month}월부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
+                secondComment = `${month}월부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프는 어떤 모양일까요?`;
             }
             
             const comment = `${firstComment}${secondComment}`;
@@ -334,7 +335,7 @@ const getSecondStatisticService = async (req) => {
             if (findLargestRecordArray[0] === 0 && findLargestRecordArray[1] === 0 && findLargestRecordArray[2] === 0 && findLargestRecordArray[3] === 0 && findLargestRecordArray[4] === 0) {
                 secondComment = `감상한 미디어를 기록해보세요!`;
             } else {
-                secondComment = `${month}월부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프 모양은 어떤 모양일까요?`;
+                secondComment = `${month}월부터 ${count}달간 가장 많은 기록을 남긴 달은\n${mon}월로, ${largestRecord}개의 기록을 남겼어요!\n다음달 나의 그래프는 어떤 모양일까요?`;
             }
 
             console.log(findLargestRecordArray);
