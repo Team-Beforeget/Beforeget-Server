@@ -422,10 +422,11 @@ const getThirdStatisticService = async (req, res) => {
       let label;
       let a_count_type;
       let A,B,C;
+      let read;
 
       if(a_type == '영화' ||a_type == '웹툰' ||a_type == '유튜브'){
         a_count_type=a_count+'편';
-      }else if(a_type == 'Music'){
+      }else if(a_type == '음악'){
         a_count_type=a_count+'곡';
       }else{ a_count_type=a_count+'권';}
 
@@ -439,12 +440,19 @@ const getThirdStatisticService = async (req, res) => {
         C = c_type+'는'
       }else{ C = c_type+'은' }
 
+      if(a_type == '책'){
+        read = '읽었어요';
+      }else if(a_type == '음악'){
+        read = '들었어요';
+      }else{ read = '봤어요'; }
+
+
       if(a_count > b_count && b_count == c_count){
         label = `${mon}월 한 달간 ${a_count_type}의 ${A} 기록하셨네요!\n다음으로 높은 랭킹을 차지한 ${B} ${C}\n각각 ${c_count}개 기록했어요.`;
       }else{
         label = `${mon}월 한 달간 ${a_count_type}의 ${A} 기록하셨네요!\n다음으로 높은 랭킹을 차지한 ${B} ${C}\n각각 ${b_count}개, ${c_count}개 기록했어요.`;
       }
-      data['title']=`${A} 가장 많이 읽었어요.`;
+      data['title']=`${A} 가장 많이 ${read}.`;
       data['label']= label;
 
       return data;
